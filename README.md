@@ -90,3 +90,4 @@ See `server/.env.example` and `client/.env.example` for required variables.
 ## License
 
 MIT
+

@@ -16,3 +16,4 @@ app.get('/api/health', (_req, res) => {
 // Routes will be added here in Phase 2
 
 export default app;
+

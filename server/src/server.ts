@@ -32,3 +32,4 @@ process.on('SIGTERM', async () => {
 });
 
 main();
+
