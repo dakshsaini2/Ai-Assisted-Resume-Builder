@@ -1,0 +1,198 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  firstName String   @map("first_name")
+  lastName  String   @map("last_name")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  resumes      Resume[]
+  coverLetters CoverLetter[]
+
+  @@map("users")
+}
+
+model Resume {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  title      String   @default("Untitled Resume")
+  templateId String   @default("classic") @map("template_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  // Personal Info
+  fullName String? @map("full_name")
+  email    String?
+  phone    String?
+  location String?
+  linkedin String?
+  github   String?
+  website  String?
+  summary  String?
+
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  education    Education[]
+  experiences  Experience[]
+  projects     Project[]
+  skills       Skill[]
+  certifications Certification[]
+  achievements Achievement[]
+  languages    Language[]
+  analyses     ResumeAnalysis[]
+  jobMatches   JobMatch[]
+
+  @@map("resumes")
+}
+
+model Education {
+  id          String   @id @default(uuid())
+  resumeId    String   @map("resume_id")
+  institution String
+  degree      String
+  field       String?
+  startDate   String?  @map("start_date")
+  endDate     String?  @map("end_date")
+  gpa         String?
+  description String?
+  sortOrder   Int      @default(0) @map("sort_order")
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("education")
+}
+
+model Experience {
+  id          String   @id @default(uuid())
+  resumeId    String   @map("resume_id")
+  company     String
+  position    String
+  location    String?
+  startDate   String?  @map("start_date")
+  endDate     String?  @map("end_date")
+  current     Boolean  @default(false)
+  description String?
+  sortOrder   Int      @default(0) @map("sort_order")
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("experiences")
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  resumeId    String   @map("resume_id")
+  name        String
+  description String?
+  technologies String?
+  link        String?
+  startDate   String?  @map("start_date")
+  endDate     String?  @map("end_date")
+  sortOrder   Int      @default(0) @map("sort_order")
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("projects")
+}
+
+model Skill {
+  id       String @id @default(uuid())
+  resumeId String @map("resume_id")
+  category String @default("General")
+  name     String
+  level    String? // Beginner, Intermediate, Advanced, Expert
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("skills")
+}
+
+model Certification {
+  id           String  @id @default(uuid())
+  resumeId     String  @map("resume_id")
+  name         String
+  issuer       String?
+  date         String?
+  expiryDate   String? @map("expiry_date")
+  credentialId String? @map("credential_id")
+  url          String?
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("certifications")
+}
+
+model Achievement {
+  id          String @id @default(uuid())
+  resumeId    String @map("resume_id")
+  title       String
+  description String?
+  date        String?
+  sortOrder   Int    @default(0) @map("sort_order")
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("achievements")
+}
+
+model Language {
+  id          String @id @default(uuid())
+  resumeId    String @map("resume_id")
+  name        String
+  proficiency String? // Native, Fluent, Advanced, Intermediate, Basic
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("languages")
+}
+
+model CoverLetter {
+  id             String   @id @default(uuid())
+  userId         String   @map("user_id")
+  resumeId       String?  @map("resume_id")
+  companyName    String   @map("company_name")
+  jobRole        String   @map("job_role")
+  jobDescription String?  @map("job_description")
+  content        String
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("cover_letters")
+}
+
+model ResumeAnalysis {
+  id        String   @id @default(uuid())
+  resumeId  String   @map("resume_id")
+  score     Int
+  results   Json     // Structured analysis results
+  createdAt DateTime @default(now()) @map("created_at")
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("resume_analyses")
+}
+
+model JobMatch {
+  id             String   @id @default(uuid())
+  resumeId       String   @map("resume_id")
+  jobTitle       String   @map("job_title")
+  jobDescription String   @map("job_description")
+  matchScore     Int      @map("match_score")
+  results        Json     // Structured match results
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("job_matches")
+}
