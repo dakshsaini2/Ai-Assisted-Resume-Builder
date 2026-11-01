@@ -95,3 +95,4 @@ export const Modal: React.FC<ModalProps> = ({
     </div>
   );
 };
+

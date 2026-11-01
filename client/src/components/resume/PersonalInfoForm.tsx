@@ -71,3 +71,4 @@ export const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ data, onChan
     </div>
   );
 };
+

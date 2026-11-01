@@ -36,3 +36,4 @@ export const resumeService = {
     await api.delete<ApiResponse<null>>(`/resumes/${id}`);
   },
 };
+

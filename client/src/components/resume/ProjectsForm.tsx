@@ -139,3 +139,4 @@ export const ProjectsForm: React.FC<ProjectsFormProps> = ({ items, onChange }) =
     </div>
   );
 };
+

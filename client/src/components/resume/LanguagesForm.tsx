@@ -120,3 +120,4 @@ export const LanguagesForm: React.FC<LanguagesFormProps> = ({ items, onChange })
     </div>
   );
 };
+

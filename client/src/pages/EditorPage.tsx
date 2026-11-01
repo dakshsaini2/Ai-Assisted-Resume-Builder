@@ -284,21 +284,15 @@ export const EditorPage: React.FC = () => {
 
         {/* Right Live A4 Resume Preview Panel */}
         {showPreview && (
-          <aside className="hidden lg:block w-[48%] xl:w-[50%] bg-warm-gray border-l border-gray-200/80 p-6 overflow-y-auto">
-            <div className="sticky top-0 mb-3 flex items-center justify-between">
-              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Live A4 Preview ({resume.templateId})
-              </span>
-              <span className="text-[11px] text-gray-400">
-                Real-time updates
-              </span>
-            </div>
-            <div className="scale-95 origin-top transition-transform">
-              <ResumePreview resume={resume} />
-            </div>
+          <aside className="hidden lg:block w-[48%] xl:w-[50%] bg-warm-gray border-l border-gray-200/80 p-5 overflow-y-auto">
+            <ResumePreview
+              resume={resume}
+              onTemplateChange={(templateId) => handleUpdate({ templateId })}
+            />
           </aside>
         )}
       </div>
     </div>
   );
 };
+

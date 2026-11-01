@@ -35,3 +35,4 @@ export const PublicRoute: React.FC<{ children: React.ReactNode }> = ({
 
   return <>{children}</>;
 };
+

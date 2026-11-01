@@ -25,12 +25,69 @@ body {
   min-height: 100vh;
 }
 
-/* Print styles for PDF */
+/* Standard A4 Dimensions */
+.resume-document {
+  width: 210mm;
+  min-height: 297mm;
+  background-color: #ffffff;
+  color: #1f2937;
+  box-sizing: border-box;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* Page Break Protection */
+.page-break-avoid {
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+}
+
+.page-break-before {
+  break-before: page !important;
+  page-break-before: always !important;
+}
+
+/* PRINT STYLESHEET */
 @media print {
-  body {
-    background: white;
+  @page {
+    size: A4 portrait;
+    margin: 0;
   }
+
+  html,
+  body {
+    background: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 210mm !important;
+    min-height: 297mm !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide all UI elements except the resume document itself */
+  header,
+  footer,
+  aside:not(.resume-document aside),
+  nav,
+  button,
   .no-print {
     display: none !important;
+  }
+
+  /* Reset any scaling transforms on print */
+  .resume-print-wrapper {
+    transform: none !important;
+    width: 210mm !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+  }
+
+  .resume-document {
+    width: 210mm !important;
+    margin: 0 auto !important;
+    box-shadow: none !important;
+    border: none !important;
+    overflow: visible !important;
   }
 }

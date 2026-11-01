@@ -151,3 +151,4 @@ export const EducationForm: React.FC<EducationFormProps> = ({ items, onChange })
     </div>
   );
 };
+
