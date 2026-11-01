@@ -50,3 +50,4 @@ export function formatUrlForDisplay(url?: string | null): string {
     .replace(/^www\./i, '')
     .replace(/\/$/, '');
 }
+

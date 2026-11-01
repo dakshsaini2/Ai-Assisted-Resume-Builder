@@ -312,3 +312,4 @@ export const ModernTemplate: React.FC<ModernTemplateProps> = ({ resume }) => {
     </div>
   );
 };
+

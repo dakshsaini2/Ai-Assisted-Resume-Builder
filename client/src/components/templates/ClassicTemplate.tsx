@@ -287,3 +287,4 @@ export const ClassicTemplate: React.FC<ClassicTemplateProps> = ({ resume }) => {
     </div>
   );
 };
+
