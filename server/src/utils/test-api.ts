@@ -1,13 +1,17 @@
 /**
- * Automated API verification test for Phase 2 backend.
+ * Automated API verification test for backend.
  * Run: npx tsx src/utils/test-api.ts
  * Requires the server to be running on PORT from .env
  */
 
 import http from 'http';
 import app from '../app';
+import {
+  authRegisterRateLimiterInstance,
+  authLoginRateLimiterInstance,
+} from '../middleware/rateLimit.middleware';
 
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.TEST_PORT ? parseInt(process.env.TEST_PORT, 10) : 5095;
 const BASE_URL = `http://127.0.0.1:${PORT}/api`;
 
 let passed = 0;
@@ -30,13 +34,8 @@ async function json(res: Response): Promise<any> {
 async function runTests() {
   console.log(`\n🔧 Testing API at ${BASE_URL}\n`);
 
-  let server: any = null;
-  try {
-    await fetch(`${BASE_URL}/health`);
-  } catch {
-    server = http.createServer(app);
-    await new Promise<void>((resolve) => server.listen(PORT, '127.0.0.1', () => resolve()));
-  }
+  const server = http.createServer(app);
+  await new Promise<void>((resolve) => server.listen(PORT, '127.0.0.1', () => resolve()));
 
   try {
     // ── Health Check ──────────────────────────────────────────
@@ -93,6 +92,7 @@ async function runTests() {
   assert('Register invalid email → 400', badEmailRes.status === 400);
 
   // Weak password
+  authRegisterRateLimiterInstance.reset();
   const weakPwRes = await fetch(`${BASE_URL}/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -214,6 +214,7 @@ async function runTests() {
 
   // Create second user and try to access first user's resume
   console.log('\nResume: Authorization');
+  authRegisterRateLimiterInstance.reset();
   const user2Email = `user2_${Date.now()}@example.com`;
   const reg2Res = await fetch(`${BASE_URL}/auth/register`, {
     method: 'POST',

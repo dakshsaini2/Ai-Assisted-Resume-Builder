@@ -90,7 +90,6 @@ export const updateResumeSchema = z.object({
   github: z.string().nullable().optional(),
   website: z.string().nullable().optional(),
   summary: z.string().nullable().optional(),
-  // Nested sub-entities for full resume save/sync
   education: z.array(educationItemSchema).optional(),
   experiences: z.array(experienceItemSchema).optional(),
   projects: z.array(projectItemSchema).optional(),

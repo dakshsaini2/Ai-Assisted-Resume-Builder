@@ -2,9 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import { verifyToken } from '../utils/jwt';
 import { sendError } from '../utils/response';
 
-// Type declaration is in src/types/express.d.ts
-
 export const authenticateUser = (
+
   req: Request,
   res: Response,
   next: NextFunction

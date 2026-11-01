@@ -4,7 +4,6 @@ import prisma from './config/database';
 
 async function main() {
   try {
-    // Test database connection
     await prisma.$connect();
     console.log('✓ Database connected');
 
@@ -18,7 +17,6 @@ async function main() {
   }
 }
 
-// Graceful shutdown
 process.on('SIGINT', async () => {
   await prisma.$disconnect();
   process.exit(0);

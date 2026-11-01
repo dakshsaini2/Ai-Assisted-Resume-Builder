@@ -25,7 +25,6 @@ export const CreativeTemplate: React.FC<CreativeTemplateProps> = ({ resume }) =>
     languages = [],
   } = resume;
 
-  // Filter valid entries
   const validEducation = education.filter((e) => e.institution?.trim() || e.degree?.trim());
   const validExperience = experiences.filter((e) => e.company?.trim() || e.position?.trim());
   const validProjects = projects.filter((p) => p.name?.trim());
@@ -54,13 +53,11 @@ export const CreativeTemplate: React.FC<CreativeTemplateProps> = ({ resume }) =>
         fontSize: '9.5pt',
       }}
     >
-      {/* Left Sidebar (33% width) */}
       <aside
         className="w-[33%] bg-slate-900 text-slate-100 flex flex-col justify-between shrink-0 min-w-0"
         style={{ padding: '16mm 12mm' }}
       >
         <div className="space-y-6">
-          {/* Identity & Monogram */}
           <div className="space-y-2 page-break-avoid">
             <div className="w-12 h-12 rounded-xl bg-orange-500 text-white font-extrabold flex items-center justify-center text-lg shadow-sm">
               {initials}
@@ -73,7 +70,6 @@ export const CreativeTemplate: React.FC<CreativeTemplateProps> = ({ resume }) =>
             </p>
           </div>
 
-          {/* Contact Details */}
           {(email || phone || location || linkedin || github || website) && (
             <div className="space-y-2.5 border-t border-slate-800 pt-4 page-break-avoid">
               <h3 className="text-[8.5pt] font-bold uppercase tracking-wider text-slate-400">
@@ -102,7 +98,6 @@ export const CreativeTemplate: React.FC<CreativeTemplateProps> = ({ resume }) =>
             </div>
           )}
 
-          {/* Skills */}
           {validSkills.length > 0 && (
             <div className="space-y-2.5 border-t border-slate-800 pt-4 page-break-avoid">
               <h3 className="text-[8.5pt] font-bold uppercase tracking-wider text-slate-400">
@@ -121,7 +116,6 @@ export const CreativeTemplate: React.FC<CreativeTemplateProps> = ({ resume }) =>
             </div>
           )}
 
-          {/* Education */}
           {validEducation.length > 0 && (
             <div className="space-y-3 border-t border-slate-800 pt-4 page-break-avoid">
               <h3 className="text-[8.5pt] font-bold uppercase tracking-wider text-slate-400">
@@ -147,7 +141,6 @@ export const CreativeTemplate: React.FC<CreativeTemplateProps> = ({ resume }) =>
             </div>
           )}
 
-          {/* Languages */}
           {validLanguages.length > 0 && (
             <div className="space-y-2 border-t border-slate-800 pt-4 page-break-avoid">
               <h3 className="text-[8.5pt] font-bold uppercase tracking-wider text-slate-400">
@@ -166,13 +159,11 @@ export const CreativeTemplate: React.FC<CreativeTemplateProps> = ({ resume }) =>
         </div>
       </aside>
 
-      {/* Right Content Area (67% width) */}
       <main
         className="w-[67%] bg-white flex flex-col justify-between min-w-0"
         style={{ padding: '16mm 16mm' }}
       >
         <div className="space-y-5">
-          {/* Executive Summary */}
           {summary && summary.trim() && (
             <section className="page-break-avoid">
               <h2 className="text-[10pt] font-bold uppercase tracking-wider text-gray-900 border-b-2 border-orange-500 pb-1 mb-2">
@@ -184,7 +175,6 @@ export const CreativeTemplate: React.FC<CreativeTemplateProps> = ({ resume }) =>
             </section>
           )}
 
-          {/* Work Experience */}
           {validExperience.length > 0 && (
             <section>
               <h2 className="text-[10pt] font-bold uppercase tracking-wider text-gray-900 border-b-2 border-orange-500 pb-1 mb-3">
@@ -238,7 +228,6 @@ export const CreativeTemplate: React.FC<CreativeTemplateProps> = ({ resume }) =>
             </section>
           )}
 
-          {/* Featured Projects */}
           {validProjects.length > 0 && (
             <section>
               <h2 className="text-[10pt] font-bold uppercase tracking-wider text-gray-900 border-b-2 border-orange-500 pb-1 mb-3">
@@ -289,7 +278,6 @@ export const CreativeTemplate: React.FC<CreativeTemplateProps> = ({ resume }) =>
             </section>
           )}
 
-          {/* Honors & Certifications */}
           {(validCerts.length > 0 || validAchievements.length > 0) && (
             <section className="page-break-avoid">
               <h2 className="text-[10pt] font-bold uppercase tracking-wider text-gray-900 border-b-2 border-orange-500 pb-1 mb-2">

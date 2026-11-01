@@ -159,3 +159,5 @@ erDiagram
 2. **Cascade Deletes**: Deleting a User automatically cascades to delete all their Resumes and CoverLetters. Deleting a Resume automatically cascades to all associated Education, Experience, Project, Skill, Certification, Achievement, Language, Analysis, and JobMatch records.
 3. **Atomic Multi-Entity Sync**: Updating a resume's nested sections is executed in an atomic Prisma transaction (`prisma.$transaction`).
 
+4. **Foreign Key Indexes**: Dedicated database indexes exist on all foreign key columns (`userId`, `resumeId`) across all tables to optimize relational joins and eliminate full table scans during cascade operations.
+5. **Referential Integrity on Cover Letters**: `CoverLetter.resumeId` is explicitly constrained to `Resume.id` with `onDelete: SetNull`, ensuring zero orphaned resume references while allowing independent cover letter retention.

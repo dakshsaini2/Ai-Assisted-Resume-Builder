@@ -20,6 +20,8 @@
     "dist",
     "src/utils/test-qa-diagnostics.ts",
     "src/utils/test-pdf-quality.ts",
-    "src/utils/test-screenshot-preview.ts"
+    "src/utils/test-screenshot-preview.ts",
+    "src/utils/test-pdf-pagination-matrix.ts",
+    "src/utils/test-e2e-browser.ts"
   ]
 }

@@ -1,16 +1,17 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useBlocker } from 'react-router-dom';
 import {
   ArrowLeft,
   Save,
   Check,
   Eye,
   EyeOff,
-  Sparkles,
   Download,
+  AlertTriangle,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button } from '../components/common/Button';
+import { Modal } from '../components/common/Modal';
 import { LoadingState } from '../components/common/LoadingState';
 import { ErrorState } from '../components/common/ErrorState';
 import { Sidebar } from '../components/layout/Sidebar';
@@ -25,6 +26,13 @@ import { AchievementsForm } from '../components/resume/AchievementsForm';
 import { LanguagesForm } from '../components/resume/LanguagesForm';
 import { ResumePreview } from '../components/resume/ResumePreview';
 import { resumeService, downloadResumePdf } from '../services/resumeService';
+import { hasAiPrivacyConsent, setAiPrivacyConsent } from '../services/aiService';
+import { AiConsentModal } from '../components/resume/AiConsentModal';
+import { AiSummaryModal } from '../components/resume/AiSummaryModal';
+import { AiImproveModal } from '../components/resume/AiImproveModal';
+import { ResumeAnalyzer } from '../components/resume/ResumeAnalyzer';
+import { JobMatcher } from '../components/resume/JobMatcher';
+import { CoverLetterGenerator } from '../components/resume/CoverLetterGenerator';
 import type { Resume } from '../types';
 
 export const EditorPage: React.FC = () => {
@@ -40,7 +48,42 @@ export const EditorPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(true);
 
-  // Fetch resume data
+  const [isAiConsentModalOpen, setIsAiConsentModalOpen] = useState(false);
+  const [pendingAiAction, setPendingAiAction] = useState<(() => void) | null>(null);
+  const [isAiSummaryModalOpen, setIsAiSummaryModalOpen] = useState(false);
+  const [improveModalState, setImproveModalState] = useState<{
+    isOpen: boolean;
+    text: string;
+    onAccept: (improved: string) => void;
+  }>({
+    isOpen: false,
+    text: '',
+    onAccept: () => {},
+  });
+
+  const blocker = useBlocker(
+    useCallback(
+      ({ currentLocation, nextLocation }) =>
+        !isSaved && currentLocation.pathname !== nextLocation.pathname,
+      [isSaved]
+    )
+  );
+
+  useEffect(() => {
+    if (isSaved) return;
+
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = '';
+      return '';
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [isSaved]);
+
   const loadResume = useCallback(async () => {
     if (!id) return;
     try {
@@ -60,13 +103,11 @@ export const EditorPage: React.FC = () => {
     loadResume();
   }, [loadResume]);
 
-  // Update in-memory resume state
   const handleUpdate = (fields: Partial<Resume>) => {
     setResume((prev) => (prev ? { ...prev, ...fields } : null));
     setIsSaved(false);
   };
 
-  // Save to database
   const handleSave = async () => {
     if (!resume || !id) return;
     try {
@@ -82,14 +123,12 @@ export const EditorPage: React.FC = () => {
     }
   };
 
-  // Download PDF
   const handleDownloadPdf = async () => {
     if (!resume || !id || isDownloadingPdf) return;
 
     try {
       setIsDownloadingPdf(true);
 
-      // If user has unsaved edits, save them first so PDF reflects current editor state
       if (!isSaved) {
         try {
           setIsSaving(true);
@@ -118,6 +157,51 @@ export const EditorPage: React.FC = () => {
     }
   };
 
+  const requireAiConsent = (action: () => void) => {
+    if (hasAiPrivacyConsent()) {
+      action();
+    } else {
+      setPendingAiAction(() => action);
+      setIsAiConsentModalOpen(true);
+    }
+  };
+
+  const handleConfirmAiConsent = () => {
+    setAiPrivacyConsent(true);
+    setIsAiConsentModalOpen(false);
+    if (pendingAiAction) {
+      pendingAiAction();
+      setPendingAiAction(null);
+    }
+  };
+
+  const handleOpenAiSummary = () => {
+    requireAiConsent(() => {
+      setIsAiSummaryModalOpen(true);
+    });
+  };
+
+  const handleOpenAiImprove = (text: string, onAccept: (improved: string) => void) => {
+    requireAiConsent(() => {
+      setImproveModalState({
+        isOpen: true,
+        text,
+        onAccept,
+      });
+    });
+  };
+
+  const handleApplySummary = (newSummary: string) => {
+    handleUpdate({ summary: newSummary });
+    toast.success('Professional summary updated in editor!');
+  };
+
+  const handleApplyImprove = (improvedText: string) => {
+    improveModalState.onAccept(improvedText);
+    setImproveModalState((prev) => ({ ...prev, isOpen: false }));
+    toast.success('Bullet point updated in editor!');
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-warm-white flex items-center justify-center">
@@ -140,7 +224,6 @@ export const EditorPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-warm-white text-charcoal">
-      {/* Top Header Toolbar */}
       <header className="sticky top-0 z-30 bg-white border-b border-gray-200/80 px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Link
@@ -162,9 +245,7 @@ export const EditorPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Template Selector & Action Controls */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Template Selector */}
           <div className="hidden sm:flex items-center bg-gray-100/80 p-0.5 rounded-lg border border-gray-200 text-xs">
             {(['classic', 'modern', 'creative'] as const).map((tId) => (
               <button
@@ -181,7 +262,6 @@ export const EditorPage: React.FC = () => {
             ))}
           </div>
 
-          {/* Toggle Live Preview */}
           <Button
             variant="outline"
             size="sm"
@@ -192,7 +272,6 @@ export const EditorPage: React.FC = () => {
             {showPreview ? 'Hide Preview' : 'Show Preview'}
           </Button>
 
-          {/* Save Button */}
           <Button
             size="sm"
             onClick={handleSave}
@@ -203,7 +282,6 @@ export const EditorPage: React.FC = () => {
             {isSaved ? 'Saved' : 'Save Changes'}
           </Button>
 
-          {/* Download PDF Button */}
           <Button
             size="sm"
             onClick={handleDownloadPdf}
@@ -219,18 +297,14 @@ export const EditorPage: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Workspace: Sidebar + Form Content + Live Preview */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Left Section Sidebar */}
         <Sidebar
           activeSection={activeSection}
           onSelectSection={setActiveSection}
           className="hidden md:flex"
         />
 
-        {/* Center Editing Area */}
         <main className="flex-1 p-6 sm:p-8 overflow-y-auto max-w-3xl">
-          {/* Mobile section selector dropdown */}
           <div className="block md:hidden mb-6">
             <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1.5">
               Jump to Section
@@ -249,6 +323,9 @@ export const EditorPage: React.FC = () => {
               <option value="certifications">Certifications</option>
               <option value="achievements">Achievements</option>
               <option value="languages">Languages</option>
+              <option value="ai-analyzer">ATS Analysis & Scoring</option>
+              <option value="ai-job-match">Job Description Matching</option>
+              <option value="ai-cover-letter">AI Cover Letter</option>
             </select>
           </div>
 
@@ -258,7 +335,11 @@ export const EditorPage: React.FC = () => {
             )}
 
             {activeSection === 'summary' && (
-              <SummaryForm data={resume} onChange={handleUpdate} />
+              <SummaryForm
+                data={resume}
+                onChange={handleUpdate}
+                onOpenAiSummary={handleOpenAiSummary}
+              />
             )}
 
             {activeSection === 'education' && (
@@ -272,6 +353,7 @@ export const EditorPage: React.FC = () => {
               <ExperienceForm
                 items={resume.experiences || []}
                 onChange={(experiences) => handleUpdate({ experiences })}
+                onImproveBullet={handleOpenAiImprove}
               />
             )}
 
@@ -310,31 +392,31 @@ export const EditorPage: React.FC = () => {
               />
             )}
 
-            {/* AI Tools Info Panels (Will be fully integrated in Phase 6) */}
-            {activeSection.startsWith('ai-') && (
-              <div className="text-center py-10 space-y-4">
-                <div className="w-12 h-12 rounded-xl bg-orange-100 text-primary flex items-center justify-center mx-auto">
-                  <Sparkles className="w-6 h-6" />
-                </div>
-                <h3 className="text-lg font-bold text-charcoal capitalize">
-                  {activeSection.replace('ai-', '').replace('-', ' ')} Tool
-                </h3>
-                <p className="text-sm text-charcoal-light max-w-md mx-auto">
-                  This intelligent tool analyzes your resume data using Google Gemini to provide instant actionable feedback and tailored documents.
-                </p>
-                <Button
-                  size="sm"
-                  onClick={() => setActiveSection('personal')}
-                  variant="outline"
-                >
-                  Back to Editing Content
-                </Button>
-              </div>
+            {activeSection === 'ai-analyzer' && (
+              <ResumeAnalyzer
+                resume={resume}
+                onRequireConsent={requireAiConsent}
+                onSaveResume={handleSave}
+                isSaved={isSaved}
+              />
+            )}
+
+            {activeSection === 'ai-job-match' && (
+              <JobMatcher
+                resume={resume}
+                onRequireConsent={requireAiConsent}
+              />
+            )}
+
+            {activeSection === 'ai-cover-letter' && (
+              <CoverLetterGenerator
+                resume={resume}
+                onRequireConsent={requireAiConsent}
+              />
             )}
           </div>
         </main>
 
-        {/* Right Live A4 Resume Preview Panel */}
         {showPreview && (
           <aside className="hidden lg:block w-[48%] xl:w-[50%] bg-warm-gray border-l border-gray-200/80 p-5 overflow-y-auto">
             <ResumePreview
@@ -344,6 +426,71 @@ export const EditorPage: React.FC = () => {
           </aside>
         )}
       </div>
+
+      <AiConsentModal
+        isOpen={isAiConsentModalOpen}
+        onClose={() => {
+          setIsAiConsentModalOpen(false);
+          setPendingAiAction(null);
+        }}
+        onConfirm={handleConfirmAiConsent}
+      />
+
+      {resume && (
+        <AiSummaryModal
+          isOpen={isAiSummaryModalOpen}
+          onClose={() => setIsAiSummaryModalOpen(false)}
+          resumeId={resume.id}
+          currentSummary={resume.summary}
+          onApply={handleApplySummary}
+        />
+      )}
+
+      <AiImproveModal
+        isOpen={improveModalState.isOpen}
+        onClose={() => setImproveModalState((prev) => ({ ...prev, isOpen: false }))}
+        originalText={improveModalState.text}
+        onApply={handleApplyImprove}
+      />
+
+      <Modal
+        isOpen={blocker.state === 'blocked'}
+        onClose={() => blocker.reset?.()}
+        title="Unsaved Changes"
+        size="sm"
+        footer={
+          <>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => blocker.reset?.()}
+            >
+              Stay on Editor
+            </Button>
+            <Button
+              variant="danger"
+              size="sm"
+              onClick={() => blocker.proceed?.()}
+            >
+              Discard & Leave
+            </Button>
+          </>
+        }
+      >
+        <div className="flex items-start gap-4">
+          <div className="p-2.5 rounded-xl bg-amber-50 text-amber-600 shrink-0">
+            <AlertTriangle className="w-6 h-6" />
+          </div>
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-charcoal">
+              You have unsaved changes
+            </p>
+            <p className="text-xs text-charcoal-light leading-relaxed">
+              Leaving this page will discard your unsaved resume changes. Are you sure you want to exit without saving?
+            </p>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

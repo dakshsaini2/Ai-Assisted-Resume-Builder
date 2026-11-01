@@ -1,8 +1,3 @@
-/**
- * Custom API error class for consistent error handling.
- * Extends Error with an HTTP statusCode so the error middleware
- * can respond with the correct status.
- */
 export class ApiError extends Error {
   public statusCode: number;
   public errors?: any;

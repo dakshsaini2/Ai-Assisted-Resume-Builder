@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import type { Resume } from '../types';
 import { ClassicTemplate, ModernTemplate, CreativeTemplate } from '../components/templates';
+import { getResumeRenderData } from '../services/resumeService';
 
 type RenderStatus = 'loading' | 'ready' | 'error';
 
@@ -25,42 +26,16 @@ export const RenderResumePage: React.FC = () => {
       }
 
       try {
-        const response = await fetch(
-          `/api/resumes/${id}/render-data?token=${encodeURIComponent(token)}`
-        );
+        const loadedResume = await getResumeRenderData(id, token);
 
-        if (!response.ok) {
-          const errData = await response.json().catch(() => null);
-          const msg =
-            errData?.message || `Failed to fetch resume (HTTP ${response.status})`;
-          if (isMounted) {
-            setStatus('error');
-            setErrorMessage(msg);
-          }
-          return;
-        }
+        if (!isMounted) return;
 
-        const json = await response.json();
-        const loadedResume: Resume = json.data?.resume;
+        setResume(loadedResume);
 
-        if (!loadedResume) {
-          if (isMounted) {
-            setStatus('error');
-            setErrorMessage('Resume data not found in response.');
-          }
-          return;
-        }
-
-        if (isMounted) {
-          setResume(loadedResume);
-        }
-
-        // Wait for all web fonts and typography to complete rasterization
         if ('fonts' in document) {
           await (document as any).fonts.ready;
         }
 
-        // Short frame delay to allow browser paint to settle
         await new Promise((resolve) => setTimeout(resolve, 50));
 
         if (isMounted) {
@@ -69,7 +44,11 @@ export const RenderResumePage: React.FC = () => {
       } catch (err: any) {
         if (isMounted) {
           setStatus('error');
-          setErrorMessage(err.message || 'An unexpected error occurred while loading resume.');
+          const msg =
+            err.response?.data?.message ||
+            err.message ||
+            'An unexpected error occurred while loading resume.';
+          setErrorMessage(msg);
         }
       }
     };

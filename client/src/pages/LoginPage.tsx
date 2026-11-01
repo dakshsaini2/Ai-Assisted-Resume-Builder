@@ -53,7 +53,6 @@ export const LoginPage: React.FC = () => {
         login(token, user);
         toast.success(`Welcome back, ${user.firstName}!`);
 
-        // Navigate to redirect target or dashboard
         const from = (location.state as any)?.from?.pathname || '/dashboard';
         navigate(from, { replace: true });
       }

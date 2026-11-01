@@ -1,5 +1,5 @@
 /**
- * Automated test for Puppeteer Browser Lifecycle & PDF Service (Task 5.2)
+ * Automated test for Puppeteer Browser Lifecycle & PDF Service
  * Run: npx tsx src/utils/test-pdf-service.ts
  */
 

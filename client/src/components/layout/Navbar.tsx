@@ -33,7 +33,6 @@ export const Navbar: React.FC = () => {
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 font-bold text-xl text-charcoal tracking-tight">
             <span className="w-9 h-9 rounded-xl bg-primary text-white flex items-center justify-center shadow-xs">
               <Sparkles className="w-5 h-5" />
@@ -43,7 +42,6 @@ export const Navbar: React.FC = () => {
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
             <Link
               to="/#features"
@@ -73,7 +71,6 @@ export const Navbar: React.FC = () => {
             )}
           </nav>
 
-          {/* Desktop Right Side CTA / Profile */}
           <div className="hidden md:flex items-center gap-3">
             {isAuthenticated && user ? (
               <Dropdown
@@ -105,7 +102,6 @@ export const Navbar: React.FC = () => {
             )}
           </div>
 
-          {/* Mobile menu button */}
           <div className="flex md:hidden items-center">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -118,7 +114,6 @@ export const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden border-b border-gray-200 bg-white px-4 pt-3 pb-6 space-y-3">
           <Link

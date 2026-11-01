@@ -1,34 +1,22 @@
-import { api } from './api';
+import { api, unauthenticatedApi, getApiBaseUrl } from './api';
 import type { ApiResponse, Resume, ResumeListItem } from '../types';
 
-/**
- * Extract filename from Content-Disposition header.
- * Supports:
- * - RFC 5987 / UTF-8: filename*=UTF-8''Candidate_Name_Resume.pdf
- * - Quoted standard: filename="Candidate_Name_Resume.pdf"
- * - Unquoted: filename=Candidate_Name_Resume.pdf
- * - Fallback: Resume.pdf
- */
 export function extractFilenameFromContentDisposition(header?: string | null): string {
   if (!header) return 'Resume.pdf';
 
-  // 1. Check RFC 5987 / UTF-8 format
   const utf8Match = header.match(/filename\*=UTF-8''([^;]+)/i);
   if (utf8Match && utf8Match[1]) {
     try {
       return decodeURIComponent(utf8Match[1].trim());
     } catch {
-      // Fall through to quoted match if decode fails
     }
   }
 
-  // 2. Standard quoted format
   const quotedMatch = header.match(/filename="([^"]+)"/i);
   if (quotedMatch && quotedMatch[1]) {
     return quotedMatch[1].trim();
   }
 
-  // 3. Unquoted format
   const unquotedMatch = header.match(/filename=([^; ]+)/i);
   if (unquotedMatch && unquotedMatch[1]) {
     return unquotedMatch[1].trim();
@@ -37,11 +25,6 @@ export function extractFilenameFromContentDisposition(header?: string | null): s
   return 'Resume.pdf';
 }
 
-/**
- * Download a resume as an A4 PDF document.
- * Triggers native browser download and safely releases the Blob URL.
- * Handles Blob-encoded JSON errors from Axios gracefully.
- */
 export async function downloadResumePdf(resumeId: string): Promise<string> {
   try {
     const response = await api.get(`/resumes/${resumeId}/pdf`, {
@@ -63,14 +46,12 @@ export async function downloadResumePdf(resumeId: string): Promise<string> {
     link.click();
     document.body.removeChild(link);
 
-    // Release temporary blob URL after download triggers
     setTimeout(() => {
       window.URL.revokeObjectURL(downloadUrl);
     }, 200);
 
     return filename;
   } catch (error: any) {
-    // If the server responded with an error, Axios receives a Blob or raw string/buffer when responseType is 'blob'
     if (typeof Blob !== 'undefined' && error.response?.data instanceof Blob) {
       try {
         const errorText = await error.response.data.text();
@@ -79,7 +60,6 @@ export async function downloadResumePdf(resumeId: string): Promise<string> {
           error.message = parsed.message;
         }
       } catch {
-        // Fallback to status text or existing message
       }
     } else if (typeof error.response?.data === 'string') {
       try {
@@ -88,7 +68,6 @@ export async function downloadResumePdf(resumeId: string): Promise<string> {
           error.message = parsed.message;
         }
       } catch {
-        // Fallback
       }
     } else if (
       typeof ArrayBuffer !== 'undefined' &&
@@ -101,7 +80,6 @@ export async function downloadResumePdf(resumeId: string): Promise<string> {
           error.message = parsed.message;
         }
       } catch {
-        // Fallback
       }
     } else if (
       typeof (globalThis as any).Buffer !== 'undefined' &&
@@ -114,7 +92,6 @@ export async function downloadResumePdf(resumeId: string): Promise<string> {
           error.message = parsed.message;
         }
       } catch {
-        // Fallback
       }
     } else if (error.response?.data?.message) {
       error.message = error.response.data.message;
@@ -125,13 +102,11 @@ export async function downloadResumePdf(resumeId: string): Promise<string> {
 }
 
 export const resumeService = {
-  // Get all resumes for current user
   getAll: async (): Promise<ResumeListItem[]> => {
     const res = await api.get<ApiResponse<{ resumes: ResumeListItem[] }>>('/resumes');
     return res.data.data?.resumes || [];
   },
 
-  // Create new resume
   create: async (data: {
     title: string;
     templateId?: 'classic' | 'modern' | 'creative';
@@ -142,26 +117,53 @@ export const resumeService = {
     return res.data.data!.resume;
   },
 
-  // Get full resume with all relations
   getById: async (id: string): Promise<Resume> => {
     const res = await api.get<ApiResponse<{ resume: Resume }>>(`/resumes/${id}`);
     return res.data.data!.resume;
   },
 
-  // Update resume and its sections
   update: async (id: string, data: Partial<Resume>): Promise<Resume> => {
     const res = await api.put<ApiResponse<{ resume: Resume }>>(`/resumes/${id}`, data);
     return res.data.data!.resume;
   },
 
-  // Delete resume
   delete: async (id: string): Promise<void> => {
     await api.delete<ApiResponse<null>>(`/resumes/${id}`);
   },
 
-  // Download PDF document
   downloadPdf: downloadResumePdf,
   downloadResumePdf: downloadResumePdf,
+  getRenderData: getResumeRenderData,
 };
+
+export async function getResumeRenderData(
+  resumeId: string,
+  exportToken: string,
+  customBaseUrl?: string
+): Promise<Resume> {
+  if (!resumeId || typeof resumeId !== 'string' || resumeId.trim() === '') {
+    throw new Error('Missing or invalid resume ID.');
+  }
+  if (!exportToken || typeof exportToken !== 'string' || exportToken.trim() === '') {
+    throw new Error('Missing or invalid export token.');
+  }
+
+  const baseUrl = getApiBaseUrl(customBaseUrl);
+
+  const response = await unauthenticatedApi.get<ApiResponse<{ resume: Resume }>>(
+    `/resumes/${encodeURIComponent(resumeId.trim())}/render-data`,
+    {
+      baseURL: baseUrl,
+      params: { token: exportToken.trim() },
+    }
+  );
+
+  const resume = response.data?.data?.resume;
+  if (!resume) {
+    throw new Error('Resume data not found in response.');
+  }
+
+  return resume;
+}
 
 

@@ -38,7 +38,6 @@ export const resumeSections: SidebarSection[] = [
   { id: 'achievements', label: 'Achievements', icon: <Trophy className="w-4 h-4" />, category: 'sections' },
   { id: 'languages', label: 'Languages', icon: <Languages className="w-4 h-4" />, category: 'sections' },
 
-  // AI Tools
   { id: 'ai-analyzer', label: 'ATS Analysis', icon: <Sparkles className="w-4 h-4" />, category: 'ai' },
   { id: 'ai-cover-letter', label: 'Cover Letter', icon: <Mail className="w-4 h-4" />, category: 'ai' },
   { id: 'ai-job-match', label: 'Job Matching', icon: <Search className="w-4 h-4" />, category: 'ai' },

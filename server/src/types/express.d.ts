@@ -1,9 +1,7 @@
-/**
- * Extend the Express Request interface to include our authenticated user payload.
- */
 export interface TokenPayload {
   userId: string;
   email: string;
+  purpose?: string;
 }
 
 declare global {
@@ -14,6 +12,4 @@ declare global {
   }
 }
 
-// Ensure this file is treated as a module
 export {};
-

@@ -1,6 +1,35 @@
 import axios from 'axios';
 
-const API_BASE_URL = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL) || '/api';
+export function getApiBaseUrl(customUrl?: string): string {
+  const globalObj = typeof globalThis !== 'undefined' ? (globalThis as any) : undefined;
+  const envUrl =
+    customUrl !== undefined
+      ? customUrl
+      : (globalObj?.process?.env?.VITE_API_URL) ||
+        (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL);
+
+  if (!envUrl || typeof envUrl !== 'string' || envUrl.trim() === '') {
+    return '/api';
+  }
+  const trimmed = envUrl.trim();
+  if (trimmed.startsWith('/')) {
+    return trimmed.replace(/\/+$/, '');
+  }
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      throw new Error(`Unsupported protocol "${parsed.protocol}" in VITE_API_URL. Expected http: or https:`);
+    }
+    return trimmed.replace(/\/+$/, '');
+  } catch (err: any) {
+    if (err.message.includes('Unsupported protocol')) {
+      throw err;
+    }
+    throw new Error(`Malformed VITE_API_URL configuration: ${err.message}`);
+  }
+}
+
+export const API_BASE_URL = getApiBaseUrl();
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -9,7 +38,13 @@ export const api = axios.create({
   },
 });
 
-// Request Interceptor: Attach JWT Token
+export const unauthenticatedApi = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
 api.interceptors.request.use(
   (config) => {
     let token: string | null = null;
@@ -18,7 +53,6 @@ api.interceptors.request.use(
         token = localStorage.getItem('token');
       }
     } catch {
-      // Ignore in non-browser environments
     }
 
     if (token && config.headers) {
@@ -29,7 +63,6 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response Interceptor: Handle 401 unauthorized & generic errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -40,10 +73,8 @@ api.interceptors.response.use(
           localStorage.removeItem('user');
         }
       } catch {
-        // Ignore
       }
 
-      // If not already on an auth or render page, redirect
       if (
         typeof window !== 'undefined' &&
         window.location &&

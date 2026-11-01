@@ -14,17 +14,15 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({
   onTemplateChange,
   showToolbar = true,
 }) => {
-  const [zoom, setZoom] = useState<number>(0.85); // 85% default fits nicely on desktop
+  const [zoom, setZoom] = useState<number>(0.85);
   const [estimatedPages, setEstimatedPages] = useState<number>(1);
   const documentRef = useRef<HTMLDivElement>(null);
 
   const templateId = resume.templateId || 'modern';
 
-  // Calculate estimated page count based on A4 pixel height (approx 1122px at 96 DPI)
   useEffect(() => {
     if (documentRef.current) {
       const height = documentRef.current.scrollHeight;
-      // 1 A4 page at 96 DPI is approx 1122.5px
       const pages = Math.max(1, Math.ceil(height / 1120));
       setEstimatedPages(pages);
     }
@@ -48,10 +46,8 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({
 
   return (
     <div className="flex flex-col items-center w-full">
-      {/* Live Preview Toolbar (Hidden in Print) */}
       {showToolbar && (
         <div className="no-print sticky top-0 z-20 w-full mb-4 px-4 py-2.5 rounded-xl bg-white/90 backdrop-blur-md border border-gray-200/80 shadow-xs flex flex-wrap items-center justify-between gap-3">
-          {/* Template Quick Switcher */}
           {onTemplateChange ? (
             <div className="flex items-center gap-1 bg-gray-100 p-0.5 rounded-lg text-xs">
               {(['classic', 'modern', 'creative'] as const).map((t) => (
@@ -75,7 +71,6 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({
             </span>
           )}
 
-          {/* Zoom Controls & Page Count */}
           <div className="flex items-center gap-2">
             <span className="text-xs text-gray-400 font-medium">
               ~{estimatedPages} {estimatedPages === 1 ? 'page' : 'pages'}
@@ -114,7 +109,6 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({
               </button>
             </div>
 
-            {/* Print / Download Button */}
             <button
               type="button"
               onClick={handlePrint}
@@ -128,7 +122,6 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({
         </div>
       )}
 
-      {/* A4 Paper Container with Zoom Transform */}
       <div className="w-full flex justify-center overflow-x-auto pb-8">
         <div
           className="resume-print-wrapper transition-transform duration-150 origin-top shadow-xl border border-gray-200/80 rounded-sm"

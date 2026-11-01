@@ -1,5 +1,5 @@
 /**
- * Automated Verification Test Suite for Task 5.4:
+ * Automated Verification Test Suite:
  * Secure Express PDF Download Endpoint (GET /api/resumes/:id/pdf)
  *
  * Run: npx tsx src/utils/test-pdf-endpoint.ts
@@ -28,7 +28,7 @@ function assert(testName: string, condition: boolean, details?: string) {
 
 async function runPdfEndpointTests() {
   console.log('\n======================================================');
-  console.log('   Task 5.4 Verification: Express PDF Download API');
+  console.log('   Express PDF Download API Verification Suite');
   console.log('======================================================\n');
 
   // ─────────────────────────────────────────────────────────────
@@ -340,13 +340,13 @@ async function runPdfEndpointTests() {
   // Summary
   // ─────────────────────────────────────────────────────────────
   console.log('\n------------------------------------------------------');
-  console.log(`Task 5.4 Test Results: ${passed} passed, ${failed} failed`);
+  console.log(`PDF Endpoint Test Results: ${passed} passed, ${failed} failed`);
   console.log('------------------------------------------------------\n');
 
   process.exit(failed > 0 ? 1 : 0);
 }
 
 runPdfEndpointTests().catch((err) => {
-  console.error('Fatal error during Task 5.4 test execution:', err);
+  console.error('Fatal error during test execution:', err);
   process.exit(1);
 });

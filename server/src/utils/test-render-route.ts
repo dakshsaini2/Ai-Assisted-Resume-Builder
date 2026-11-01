@@ -1,5 +1,5 @@
 /**
- * Verification Test Suite for Task 5.3:
+ * Verification Test Suite:
  * Secure React Resume Rendering Route & Export Token Verification
  *
  * Run: npx tsx src/utils/test-render-route.ts
@@ -28,7 +28,7 @@ function assert(testName: string, condition: boolean, details?: string) {
 
 async function runTests() {
   console.log('\n======================================================');
-  console.log('   Task 5.3 Verification: Secure Render Route & Token');
+  console.log('   Secure Render Route & Export Token Verification');
   console.log('======================================================\n');
 
   // ─────────────────────────────────────────────────────────────
@@ -307,6 +307,6 @@ async function runTests() {
 }
 
 runTests().catch((err) => {
-  console.error('Fatal error during Task 5.3 test execution:', err);
+  console.error('Fatal error during test execution:', err);
   process.exit(1);
 });

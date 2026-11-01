@@ -35,17 +35,14 @@ export const DashboardPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Create Modal State
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newTemplate, setNewTemplate] = useState<'classic' | 'modern' | 'creative'>('modern');
   const [isCreating, setIsCreating] = useState(false);
 
-  // Delete Modal State
   const [resumeToDelete, setResumeToDelete] = useState<ResumeListItem | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // PDF Download State (tracks which resume ID is generating PDF)
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   const handleDownloadPdf = async (resumeId: string, resumeTitle?: string) => {
@@ -169,7 +166,6 @@ export const DashboardPage: React.FC = () => {
       <Navbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-        {/* Welcome Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-8 border-b border-gray-200">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-charcoal tracking-tight">
@@ -193,7 +189,6 @@ export const DashboardPage: React.FC = () => {
           </Button>
         </div>
 
-        {/* Quick Stats / AI Feature Announcement Bar */}
         <div className="my-8 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-orange-50 via-warm-white to-amber-50 border border-orange-200/70 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
             <div className="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center shrink-0 shadow-xs">
@@ -213,7 +208,6 @@ export const DashboardPage: React.FC = () => {
           </span>
         </div>
 
-        {/* Content Section */}
         {isLoading ? (
           <LoadingState message="Loading your resumes..." />
         ) : error ? (
@@ -260,7 +254,6 @@ export const DashboardPage: React.FC = () => {
                       {resume.fullName ? resume.fullName : 'No contact name specified'}
                     </p>
 
-                    {/* Section Count Tags */}
                     <div className="flex flex-wrap gap-2 text-[11px] text-gray-600 mb-6">
                       <span className="inline-flex items-center gap-1 px-2 py-1 rounded bg-gray-100">
                         <GraduationCap className="w-3 h-3 text-gray-400" />
@@ -333,7 +326,6 @@ export const DashboardPage: React.FC = () => {
 
       <Footer />
 
-      {/* CREATE RESUME MODAL */}
       <Modal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
@@ -392,7 +384,6 @@ export const DashboardPage: React.FC = () => {
         </form>
       </Modal>
 
-      {/* DELETE CONFIRMATION MODAL */}
       <Modal
         isOpen={!!resumeToDelete}
         onClose={() => setResumeToDelete(null)}

@@ -1,5 +1,5 @@
 /**
- * Automated Verification Test Suite for Task 5.5:
+ * Automated Verification Test Suite:
  * Frontend PDF Download Integration & Service Logic
  *
  * Run: npx tsx src/utils/test-frontend-download.ts (from client or server directory)
@@ -22,7 +22,7 @@ function assert(testName: string, condition: boolean, details?: string) {
 
 async function runFrontendDownloadTests() {
   console.log('\n======================================================');
-  console.log('   Task 5.5 Verification: Frontend PDF Download');
+  console.log('   Automated Verification: Frontend PDF Download');
   console.log('======================================================\n');
 
   // ─────────────────────────────────────────────────────────────
@@ -253,13 +253,13 @@ async function runFrontendDownloadTests() {
   // Summary
   // ─────────────────────────────────────────────────────────────
   console.log('\n------------------------------------------------------');
-  console.log(`Task 5.5 Frontend Tests: ${passed} passed, ${failed} failed`);
+  console.log(`Frontend PDF Download Tests: ${passed} passed, ${failed} failed`);
   console.log('------------------------------------------------------\n');
 
   (globalThis as any).process?.exit?.(failed > 0 ? 1 : 0);
 }
 
 runFrontendDownloadTests().catch((err) => {
-  console.error('Fatal error during Task 5.5 test execution:', err);
+  console.error('Fatal error during test execution:', err);
   (globalThis as any).process?.exit?.(1);
 });

@@ -25,7 +25,6 @@ export const ClassicTemplate: React.FC<ClassicTemplateProps> = ({ resume }) => {
     languages = [],
   } = resume;
 
-  // Filter out completely empty items
   const validEducation = education.filter((e) => e.institution?.trim() || e.degree?.trim());
   const validExperience = experiences.filter((e) => e.company?.trim() || e.position?.trim());
   const validProjects = projects.filter((p) => p.name?.trim());
@@ -34,7 +33,6 @@ export const ClassicTemplate: React.FC<ClassicTemplateProps> = ({ resume }) => {
   const validAchievements = achievements.filter((a) => a.title?.trim());
   const validLanguages = languages.filter((l) => l.name?.trim());
 
-  // Group skills by category if categories exist
   const skillCategories = validSkills.reduce<Record<string, string[]>>((acc, s) => {
     const cat = s.category?.trim() || 'Skills';
     if (!acc[cat]) acc[cat] = [];
@@ -62,7 +60,6 @@ export const ClassicTemplate: React.FC<ClassicTemplateProps> = ({ resume }) => {
         fontSize: '10.5pt',
       }}
     >
-      {/* Header */}
       <header className="text-center border-b border-gray-900 pb-3 mb-4 page-break-avoid">
         <h1 className="text-2xl font-bold tracking-wider uppercase text-gray-900">
           {fullName || 'Your Name'}
@@ -79,7 +76,6 @@ export const ClassicTemplate: React.FC<ClassicTemplateProps> = ({ resume }) => {
         )}
       </header>
 
-      {/* Professional Summary */}
       {summary && summary.trim() && (
         <section className="mb-4 page-break-avoid">
           <h2 className="text-[11pt] font-bold uppercase tracking-wider text-gray-900 border-b border-gray-400 pb-0.5 mb-1.5">
@@ -91,7 +87,6 @@ export const ClassicTemplate: React.FC<ClassicTemplateProps> = ({ resume }) => {
         </section>
       )}
 
-      {/* Work Experience */}
       {validExperience.length > 0 && (
         <section className="mb-4">
           <h2 className="text-[11pt] font-bold uppercase tracking-wider text-gray-900 border-b border-gray-400 pb-0.5 mb-2.5">
@@ -140,7 +135,6 @@ export const ClassicTemplate: React.FC<ClassicTemplateProps> = ({ resume }) => {
         </section>
       )}
 
-      {/* Education */}
       {validEducation.length > 0 && (
         <section className="mb-4">
           <h2 className="text-[11pt] font-bold uppercase tracking-wider text-gray-900 border-b border-gray-400 pb-0.5 mb-2">
@@ -180,7 +174,6 @@ export const ClassicTemplate: React.FC<ClassicTemplateProps> = ({ resume }) => {
         </section>
       )}
 
-      {/* Key Projects */}
       {validProjects.length > 0 && (
         <section className="mb-4">
           <h2 className="text-[11pt] font-bold uppercase tracking-wider text-gray-900 border-b border-gray-400 pb-0.5 mb-2">
@@ -233,7 +226,6 @@ export const ClassicTemplate: React.FC<ClassicTemplateProps> = ({ resume }) => {
         </section>
       )}
 
-      {/* Technical Skills */}
       {validSkills.length > 0 && (
         <section className="mb-4 page-break-avoid">
           <h2 className="text-[11pt] font-bold uppercase tracking-wider text-gray-900 border-b border-gray-400 pb-0.5 mb-1.5">
@@ -249,7 +241,6 @@ export const ClassicTemplate: React.FC<ClassicTemplateProps> = ({ resume }) => {
         </section>
       )}
 
-      {/* Certifications & Achievements */}
       {(validCerts.length > 0 || validAchievements.length > 0) && (
         <section className="mb-3 page-break-avoid">
           <h2 className="text-[11pt] font-bold uppercase tracking-wider text-gray-900 border-b border-gray-400 pb-0.5 mb-1.5">
@@ -273,7 +264,6 @@ export const ClassicTemplate: React.FC<ClassicTemplateProps> = ({ resume }) => {
         </section>
       )}
 
-      {/* Languages */}
       {validLanguages.length > 0 && (
         <section className="page-break-avoid">
           <h2 className="text-[11pt] font-bold uppercase tracking-wider text-gray-900 border-b border-gray-400 pb-0.5 mb-1.5">

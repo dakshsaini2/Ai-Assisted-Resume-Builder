@@ -25,7 +25,6 @@ export const ModernTemplate: React.FC<ModernTemplateProps> = ({ resume }) => {
     languages = [],
   } = resume;
 
-  // Filter out empty items
   const validEducation = education.filter((e) => e.institution?.trim() || e.degree?.trim());
   const validExperience = experiences.filter((e) => e.company?.trim() || e.position?.trim());
   const validProjects = projects.filter((p) => p.name?.trim());
@@ -34,7 +33,6 @@ export const ModernTemplate: React.FC<ModernTemplateProps> = ({ resume }) => {
   const validAchievements = achievements.filter((a) => a.title?.trim());
   const validLanguages = languages.filter((l) => l.name?.trim());
 
-  // Group skills by category
   const skillCategories = validSkills.reduce<Record<string, string[]>>((acc, s) => {
     const cat = s.category?.trim() || 'Technical Skills';
     if (!acc[cat]) acc[cat] = [];
@@ -62,7 +60,6 @@ export const ModernTemplate: React.FC<ModernTemplateProps> = ({ resume }) => {
         fontSize: '10pt',
       }}
     >
-      {/* Header with Stylish Left Accent */}
       <header className="border-l-4 border-primary pl-4 py-1 mb-5 page-break-avoid">
         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight leading-tight">
           {fullName || 'Your Full Name'}
@@ -85,7 +82,6 @@ export const ModernTemplate: React.FC<ModernTemplateProps> = ({ resume }) => {
         )}
       </header>
 
-      {/* Professional Summary */}
       {summary && summary.trim() && (
         <section className="mb-4 page-break-avoid">
           <h2 className="text-[10.5pt] font-bold uppercase tracking-wider text-primary border-b border-orange-100 pb-1 mb-1.5 flex items-center gap-2">
@@ -97,7 +93,6 @@ export const ModernTemplate: React.FC<ModernTemplateProps> = ({ resume }) => {
         </section>
       )}
 
-      {/* Technical Skills - Positioned prominently for tech roles */}
       {validSkills.length > 0 && (
         <section className="mb-4 page-break-avoid">
           <h2 className="text-[10.5pt] font-bold uppercase tracking-wider text-primary border-b border-orange-100 pb-1 mb-2">
@@ -125,7 +120,6 @@ export const ModernTemplate: React.FC<ModernTemplateProps> = ({ resume }) => {
         </section>
       )}
 
-      {/* Work Experience */}
       {validExperience.length > 0 && (
         <section className="mb-4">
           <h2 className="text-[10.5pt] font-bold uppercase tracking-wider text-primary border-b border-orange-100 pb-1 mb-2.5">
@@ -174,7 +168,6 @@ export const ModernTemplate: React.FC<ModernTemplateProps> = ({ resume }) => {
         </section>
       )}
 
-      {/* Key Projects */}
       {validProjects.length > 0 && (
         <section className="mb-4">
           <h2 className="text-[10.5pt] font-bold uppercase tracking-wider text-primary border-b border-orange-100 pb-1 mb-2.5">
@@ -225,7 +218,6 @@ export const ModernTemplate: React.FC<ModernTemplateProps> = ({ resume }) => {
         </section>
       )}
 
-      {/* Education */}
       {validEducation.length > 0 && (
         <section className="mb-4">
           <h2 className="text-[10.5pt] font-bold uppercase tracking-wider text-primary border-b border-orange-100 pb-1 mb-2">
@@ -265,7 +257,6 @@ export const ModernTemplate: React.FC<ModernTemplateProps> = ({ resume }) => {
         </section>
       )}
 
-      {/* Certifications, Achievements & Languages */}
       {(validCerts.length > 0 || validAchievements.length > 0 || validLanguages.length > 0) && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 page-break-avoid">
           {(validCerts.length > 0 || validAchievements.length > 0) && (

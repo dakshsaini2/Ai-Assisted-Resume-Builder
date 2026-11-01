@@ -6,7 +6,6 @@ import { RegisterInput, LoginInput } from '../validators/auth.validator';
 
 const SALT_ROUNDS = 10;
 
-// Safe user select — never return the password hash
 const safeUserSelect = {
   id: true,
   email: true,

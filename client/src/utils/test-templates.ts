@@ -1,5 +1,5 @@
 /**
- * Automated test suite for Phase 4 Resume Templates
+ * Automated test suite for Resume Templates
  * Tests all 3 templates against 7 distinct data scenarios:
  * 1. Minimal resume (only name & title)
  * 2. Typical student resume

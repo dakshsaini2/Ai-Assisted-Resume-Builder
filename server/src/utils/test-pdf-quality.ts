@@ -1,5 +1,5 @@
 /**
- * Automated Verification Test Suite for Task 5.6:
+ * Automated Verification Test Suite:
  * PDF Quality Assurance & Edge-Case Layout Verification
  *
  * Verifies:
@@ -104,7 +104,7 @@ function parsePdf(buffer: Buffer) {
 
 async function runQualityTests() {
   console.log('\n======================================================');
-  console.log('   Task 5.6: PDF Quality Assurance Test Suite');
+  console.log('   PDF Quality Assurance Test Suite');
   console.log('======================================================\n');
 
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'puppeteer_qa_'));
@@ -405,7 +405,7 @@ async function runQualityTests() {
   // Summary
   // ─────────────────────────────────────────────────────────────
   console.log('\n------------------------------------------------------');
-  console.log(`Task 5.6 Quality Tests: ${passed} passed, ${failed} failed`);
+  console.log(`PDF Quality Tests: ${passed} passed, ${failed} failed`);
   console.log('------------------------------------------------------\n');
 
   if (failed > 0) {
@@ -414,6 +414,6 @@ async function runQualityTests() {
 }
 
 runQualityTests().catch((err) => {
-  console.error('Fatal error during Task 5.6 quality test execution:', err);
+  console.error('Fatal error during quality test execution:', err);
   process.exit(1);
 });

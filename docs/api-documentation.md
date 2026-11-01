@@ -263,3 +263,160 @@ Internal endpoint used exclusively by the headless browser during PDF rendering.
   - `401 Unauthorized`: Missing, expired, or invalid export token
   - `403 Forbidden`: Token resumeId does not match the URL parameter
   - `404 Not Found`: Resume not found
+
+
+---
+
+## 5. AI Assistance Endpoints
+
+All AI endpoints require `Authorization: Bearer <token>` and operate under user privacy consent.
+
+### 5.1 Generate Professional Summary
+- **Method**: `POST`
+- **Path**: `/api/ai/summary`
+- **Auth**: `Bearer <token>`
+- **Body**:
+  ```json
+  {
+    "resumeId": "uuid",
+    "preferences": {
+      "experienceLevel": "mid",
+      "tone": "confident",
+      "targetRole": "Senior Full Stack Engineer"
+    }
+  }
+  ```
+- **Response** (`200 OK`):
+  ```json
+  {
+    "success": true,
+    "data": {
+      "summary": "Full Stack Engineer with 4+ years of experience designing scalable microservices..."
+    }
+  }
+  ```
+
+### 5.2 Improve Bullet Point / Description
+- **Method**: `POST`
+- **Path**: `/api/ai/improve`
+- **Auth**: `Bearer <token>`
+- **Body**:
+  ```json
+  {
+    "text": "Worked on backend APIs and made things faster.",
+    "section": "experience",
+    "options": {
+      "tone": "impactful",
+      "focus": "metrics"
+    }
+  }
+  ```
+- **Response** (`200 OK`):
+  ```json
+  {
+    "success": true,
+    "data": {
+      "improved": "Architected and optimized RESTful microservices, reducing p99 API latency by 35%."
+    }
+  }
+  ```
+
+### 5.3 Analyze Resume Completeness & ATS Readability
+- **Method**: `POST`
+- **Path**: `/api/ai/analyze`
+- **Auth**: `Bearer <token>`
+- **Body**:
+  ```json
+  {
+    "resumeId": "uuid"
+  }
+  ```
+- **Response** (`200 OK`):
+  ```json
+  {
+    "success": true,
+    "data": {
+      "id": "uuid",
+      "resumeId": "uuid",
+      "overallScore": 88,
+      "sectionScores": {
+        "contact": 95,
+        "summary": 85,
+        "experience": 88,
+        "education": 90,
+        "skills": 82
+      },
+      "improvements": [
+        "Include quantifiable metrics in work experience entries."
+      ],
+      "atsFeedback": {
+        "readabilityScore": 92,
+        "parseableStatus": "Optimal"
+      },
+      "disclaimer": "This analysis provides advisory feedback and does not guarantee specific hiring or ATS outcomes.",
+      "createdAt": "2026-11-01T..."
+    }
+  }
+  ```
+
+### 5.4 Job Description Matcher
+- **Method**: `POST`
+- **Path**: `/api/ai/job-match`
+- **Auth**: `Bearer <token>`
+- **Body**:
+  ```json
+  {
+    "resumeId": "uuid",
+    "jobTitle": "Lead Backend Engineer",
+    "jobDescription": "We are seeking a Lead Backend Engineer with deep expertise in Node.js, PostgreSQL, and distributed systems..."
+  }
+  ```
+- **Response** (`200 OK`):
+  ```json
+  {
+    "success": true,
+    "data": {
+      "id": "uuid",
+      "resumeId": "uuid",
+      "jobTitle": "Lead Backend Engineer",
+      "matchScore": 82,
+      "matchedKeywords": ["Node.js", "PostgreSQL", "REST", "TypeScript"],
+      "missingKeywords": ["Docker", "Kubernetes", "Redis"],
+      "recommendations": [
+        "Add experience with containerization tools in your project descriptions."
+      ],
+      "createdAt": "2026-11-01T..."
+    }
+  }
+  ```
+
+### 5.5 Generate Cover Letter Draft
+- **Method**: `POST`
+- **Path**: `/api/ai/cover-letter`
+- **Auth**: `Bearer <token>`
+- **Body**:
+  ```json
+  {
+    "resumeId": "uuid",
+    "companyName": "Acme Innovations",
+    "jobRole": "Senior Software Engineer",
+    "jobDescription": "Full stack engineer responsible for high-scale React and Node.js applications.",
+    "tone": "enthusiastic"
+  }
+  ```
+- **Response** (`200 OK`):
+  ```json
+  {
+    "success": true,
+    "data": {
+      "coverLetter": "Dear Hiring Team at Acme Innovations,\n\nI am writing to express my strong enthusiasm..."
+    }
+  }
+  ```
+
+### 5.6 Save and Manage Cover Letters
+- **List Cover Letters**: `GET /api/ai/cover-letters`
+- **Save Cover Letter**: `POST /api/ai/cover-letters`
+- **Get Cover Letter**: `GET /api/ai/cover-letters/:id`
+- **Update Cover Letter**: `PUT /api/ai/cover-letters/:id`
+- **Delete Cover Letter**: `DELETE /api/ai/cover-letters/:id`

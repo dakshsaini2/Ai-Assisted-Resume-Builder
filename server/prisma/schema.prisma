@@ -30,7 +30,6 @@ model Resume {
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
 
-  // Personal Info
   fullName String? @map("full_name")
   email    String?
   phone    String?
@@ -40,17 +39,19 @@ model Resume {
   website  String?
   summary  String?
 
-  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  education    Education[]
-  experiences  Experience[]
-  projects     Project[]
-  skills       Skill[]
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  education      Education[]
+  experiences    Experience[]
+  projects       Project[]
+  skills         Skill[]
   certifications Certification[]
-  achievements Achievement[]
-  languages    Language[]
-  analyses     ResumeAnalysis[]
-  jobMatches   JobMatch[]
+  achievements   Achievement[]
+  languages      Language[]
+  analyses       ResumeAnalysis[]
+  jobMatches     JobMatch[]
+  coverLetters   CoverLetter[]
 
+  @@index([userId, updatedAt(sort: Desc)])
   @@map("resumes")
 }
 
@@ -68,6 +69,7 @@ model Education {
 
   resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
+  @@index([resumeId])
   @@map("education")
 }
 
@@ -85,6 +87,7 @@ model Experience {
 
   resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
+  @@index([resumeId])
   @@map("experiences")
 }
 
@@ -101,6 +104,7 @@ model Project {
 
   resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
+  @@index([resumeId])
   @@map("projects")
 }
 
@@ -109,10 +113,11 @@ model Skill {
   resumeId String @map("resume_id")
   category String @default("General")
   name     String
-  level    String? // Beginner, Intermediate, Advanced, Expert
+  level    String?
 
   resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
+  @@index([resumeId])
   @@map("skills")
 }
 
@@ -128,6 +133,7 @@ model Certification {
 
   resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
+  @@index([resumeId])
   @@map("certifications")
 }
 
@@ -141,6 +147,7 @@ model Achievement {
 
   resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
+  @@index([resumeId])
   @@map("achievements")
 }
 
@@ -148,10 +155,11 @@ model Language {
   id          String @id @default(uuid())
   resumeId    String @map("resume_id")
   name        String
-  proficiency String? // Native, Fluent, Advanced, Intermediate, Basic
+  proficiency String?
 
   resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
+  @@index([resumeId])
   @@map("languages")
 }
 
@@ -166,8 +174,11 @@ model CoverLetter {
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resume Resume? @relation(fields: [resumeId], references: [id], onDelete: SetNull)
 
+  @@index([userId, updatedAt(sort: Desc)])
+  @@index([resumeId])
   @@map("cover_letters")
 }
 
@@ -175,11 +186,12 @@ model ResumeAnalysis {
   id        String   @id @default(uuid())
   resumeId  String   @map("resume_id")
   score     Int
-  results   Json     // Structured analysis results
+  results   Json
   createdAt DateTime @default(now()) @map("created_at")
 
   resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
+  @@index([resumeId])
   @@map("resume_analyses")
 }
 
@@ -189,11 +201,11 @@ model JobMatch {
   jobTitle       String   @map("job_title")
   jobDescription String   @map("job_description")
   matchScore     Int      @map("match_score")
-  results        Json     // Structured match results
+  results        Json
   createdAt      DateTime @default(now()) @map("created_at")
 
   resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 
+  @@index([resumeId])
   @@map("job_matches")
 }
-

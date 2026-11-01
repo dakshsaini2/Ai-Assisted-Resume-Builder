@@ -43,7 +43,6 @@ export const SkillsForm: React.FC<SkillsFormProps> = ({ items, onChange }) => {
     onChange(items.filter((_, i) => i !== index));
   };
 
-  // Group skills by category
   const groupedSkills = items.reduce<Record<string, { skill: Skill; index: number }[]>>(
     (acc, skill, index) => {
       const cat = skill.category || 'General';
@@ -63,7 +62,6 @@ export const SkillsForm: React.FC<SkillsFormProps> = ({ items, onChange }) => {
         </p>
       </div>
 
-      {/* Add New Skill Input Card */}
       <form
         onSubmit={handleAddSkill}
         className="p-4 rounded-xl border border-orange-200/80 bg-orange-50/40 space-y-3"
@@ -130,7 +128,6 @@ export const SkillsForm: React.FC<SkillsFormProps> = ({ items, onChange }) => {
         </div>
       </form>
 
-      {/* Grouped Skills Display */}
       {items.length === 0 ? (
         <div className="p-8 text-center border-2 border-dashed border-gray-200 rounded-xl bg-gray-50/50">
           <Cpu className="w-8 h-8 text-gray-400 mx-auto mb-2" />

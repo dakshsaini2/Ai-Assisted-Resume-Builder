@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-/* Custom theme for AI Resume Builder */
 @theme {
   --color-primary: #f97316;
   --color-primary-dark: #ea580c;
@@ -11,7 +10,6 @@
   --color-warm-gray: #f3f2ef;
 }
 
-/* Base styles */
 body {
   margin: 0;
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -21,7 +19,6 @@ body {
   color: var(--color-charcoal);
 }
 
-/* Headless PDF render view overrides */
 body:has(#resume-ready) {
   background-color: #ffffff !important;
   margin: 0 !important;
@@ -32,7 +29,6 @@ body:has(#resume-ready) {
   min-height: 100vh;
 }
 
-/* Standard A4 Dimensions */
 .resume-document {
   width: 210mm;
   min-height: 297mm;
@@ -45,7 +41,6 @@ body:has(#resume-ready) {
   word-wrap: break-word;
 }
 
-/* Page Break Protection */
 .page-break-avoid {
   break-inside: avoid !important;
   page-break-inside: avoid !important;
@@ -56,7 +51,6 @@ body:has(#resume-ready) {
   page-break-before: always !important;
 }
 
-/* Prevent section headings from becoming stranded at the bottom of pages (orphan prevention) */
 .resume-document h1,
 .resume-document h2,
 .resume-document h3 {
@@ -64,14 +58,12 @@ body:has(#resume-ready) {
   page-break-after: avoid !important;
 }
 
-/* Keep list items and articles intact across page breaks */
 .resume-document article,
 .resume-document li {
   break-inside: avoid;
   page-break-inside: avoid;
 }
 
-/* PRINT STYLESHEET */
 @media print {
   @page {
     size: A4 portrait;
@@ -89,7 +81,6 @@ body:has(#resume-ready) {
     print-color-adjust: exact !important;
   }
 
-  /* Hide all UI elements except the resume document itself */
   header:not(.resume-document header),
   footer,
   aside:not(.resume-document aside),
@@ -99,7 +90,6 @@ body:has(#resume-ready) {
     display: none !important;
   }
 
-  /* Reset any scaling transforms on print */
   .resume-print-wrapper {
     transform: none !important;
     width: 210mm !important;

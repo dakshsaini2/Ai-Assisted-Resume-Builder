@@ -1,5 +1,5 @@
 /**
- * Real End-to-End Browser Verification Test Suite for Task 5.5
+ * Real End-to-End Browser Verification Test Suite
  * Uses real Puppeteer Chromium browser against live frontend (port 5173)
  * and live backend (port 5001) connected to PostgreSQL database (port 5433).
  *
@@ -37,7 +37,7 @@ function assert(testName: string, condition: boolean, details?: string) {
 
 async function runBrowserVerification() {
   console.log('\n======================================================');
-  console.log('   Task 5.5: Real Browser Verification (Puppeteer)');
+  console.log('   Browser Verification Test Suite (Puppeteer)');
   console.log('======================================================\n');
 
   const downloadDir = path.resolve(__dirname, '../../test_downloads');
@@ -499,7 +499,7 @@ async function runBrowserVerification() {
   // Summary
   // ─────────────────────────────────────────────────────────────
   console.log('\n======================================================');
-  console.log(`Task 5.5 Browser Verification: ${passed} passed, ${failed} failed`);
+  console.log(`Browser Verification Results: ${passed} passed, ${failed} failed`);
   console.log('======================================================\n');
 
   if (failed > 0) {

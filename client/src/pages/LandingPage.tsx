@@ -24,20 +24,16 @@ export const LandingPage: React.FC = () => {
       <Navbar />
 
       <main className="flex-1">
-        {/* HERO SECTION */}
         <section className="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-28">
-          {/* Subtle background glow */}
           <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-orange-200/30 blur-3xl pointer-events-none rounded-full" />
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="text-center max-w-3xl mx-auto">
-              {/* Badge */}
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-100/70 text-primary-dark text-xs font-semibold mb-6 border border-orange-200/60 shadow-xs">
                 <Sparkles className="w-3.5 h-3.5 text-primary" />
                 <span>AI-Powered Resume Builder for Tech & Modern Careers</span>
               </div>
 
-              {/* Main Headline */}
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-charcoal leading-[1.15]">
                 Craft job-winning resumes in minutes with{' '}
                 <span className="text-primary underline decoration-orange-300 decoration-wavy decoration-2">
@@ -45,13 +41,11 @@ export const LandingPage: React.FC = () => {
                 </span>
               </h1>
 
-              {/* Subtitle */}
               <p className="mt-6 text-lg sm:text-xl text-charcoal-light leading-relaxed max-w-2xl mx-auto">
                 Transform rough bullet points into professional, metric-driven achievements.
                 Choose between three battle-tested ATS templates and export pixel-perfect PDFs instantly.
               </p>
 
-              {/* CTA buttons */}
               <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link to={isAuthenticated ? '/dashboard' : '/register'}>
                   <Button size="lg" className="w-full sm:w-auto shadow-md hover:shadow-lg" rightIcon={<ArrowRight className="w-4 h-4" />}>
@@ -65,7 +59,6 @@ export const LandingPage: React.FC = () => {
                 </a>
               </div>
 
-              {/* Social Proof / Feature Highlights */}
               <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-xs text-charcoal-light font-medium">
                 <div className="flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600" />
@@ -82,7 +75,6 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Resume Preview Showcase Graphic */}
             <div className="mt-14 max-w-4xl mx-auto rounded-2xl border border-gray-200/80 bg-white p-3 shadow-xl">
               <div className="rounded-xl bg-warm-white border border-gray-100 overflow-hidden p-6 sm:p-10 text-left">
                 <div className="flex items-center justify-between border-b border-gray-200 pb-4 mb-6">
@@ -155,7 +147,6 @@ export const LandingPage: React.FC = () => {
           </div>
         </section>
 
-        {/* FEATURES GRID */}
         <section id="features" className="py-20 bg-white border-y border-gray-200/80">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-2xl mx-auto mb-16">
@@ -171,7 +162,6 @@ export const LandingPage: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Feature 1 */}
               <div className="p-8 rounded-2xl bg-warm-white border border-gray-200/70 hover:border-orange-300 transition-all shadow-xs hover:shadow-md">
                 <div className="w-12 h-12 rounded-xl bg-orange-100 text-primary flex items-center justify-center mb-6">
                   <Sparkles className="w-6 h-6" />
@@ -184,7 +174,6 @@ export const LandingPage: React.FC = () => {
                 </p>
               </div>
 
-              {/* Feature 2 */}
               <div className="p-8 rounded-2xl bg-warm-white border border-gray-200/70 hover:border-orange-300 transition-all shadow-xs hover:shadow-md">
                 <div className="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-6">
                   <Layers className="w-6 h-6" />
@@ -197,7 +186,6 @@ export const LandingPage: React.FC = () => {
                 </p>
               </div>
 
-              {/* Feature 3 */}
               <div className="p-8 rounded-2xl bg-warm-white border border-gray-200/70 hover:border-orange-300 transition-all shadow-xs hover:shadow-md">
                 <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-6">
                   <FileCheck className="w-6 h-6" />
@@ -210,7 +198,6 @@ export const LandingPage: React.FC = () => {
                 </p>
               </div>
 
-              {/* Feature 4 */}
               <div className="p-8 rounded-2xl bg-warm-white border border-gray-200/70 hover:border-orange-300 transition-all shadow-xs hover:shadow-md">
                 <div className="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center mb-6">
                   <Target className="w-6 h-6" />
@@ -223,7 +210,6 @@ export const LandingPage: React.FC = () => {
                 </p>
               </div>
 
-              {/* Feature 5 */}
               <div className="p-8 rounded-2xl bg-warm-white border border-gray-200/70 hover:border-orange-300 transition-all shadow-xs hover:shadow-md">
                 <div className="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mb-6">
                   <Zap className="w-6 h-6" />
@@ -236,7 +222,6 @@ export const LandingPage: React.FC = () => {
                 </p>
               </div>
 
-              {/* Feature 6 */}
               <div className="p-8 rounded-2xl bg-warm-white border border-gray-200/70 hover:border-orange-300 transition-all shadow-xs hover:shadow-md">
                 <div className="w-12 h-12 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center mb-6">
                   <FileText className="w-6 h-6" />
@@ -252,7 +237,6 @@ export const LandingPage: React.FC = () => {
           </div>
         </section>
 
-        {/* TEMPLATE SHOWCASE */}
         <section id="templates" className="py-20 bg-warm-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-2xl mx-auto mb-16">
@@ -268,7 +252,6 @@ export const LandingPage: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Classic Template */}
               <div className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col justify-between hover:shadow-lg transition-all">
                 <div>
                   <div className="h-64 rounded-xl bg-gray-50 border border-gray-200 p-4 mb-5 flex flex-col justify-between overflow-hidden shadow-inner">
@@ -311,7 +294,6 @@ export const LandingPage: React.FC = () => {
                 </Link>
               </div>
 
-              {/* Modern Template */}
               <div className="bg-white rounded-2xl border-2 border-primary/40 p-6 flex flex-col justify-between hover:shadow-lg transition-all relative">
                 <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-primary text-white text-xs font-semibold shadow-xs">
                   Most Popular
@@ -355,7 +337,6 @@ export const LandingPage: React.FC = () => {
                 </Link>
               </div>
 
-              {/* Creative Template */}
               <div className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col justify-between hover:shadow-lg transition-all">
                 <div>
                   <div className="h-64 rounded-xl bg-gray-50 border border-gray-200 mb-5 flex overflow-hidden shadow-inner">
@@ -400,7 +381,6 @@ export const LandingPage: React.FC = () => {
           </div>
         </section>
 
-        {/* HOW IT WORKS */}
         <section id="how-it-works" className="py-20 bg-white border-t border-gray-200/80">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-2xl mx-auto mb-16">
@@ -446,7 +426,6 @@ export const LandingPage: React.FC = () => {
           </div>
         </section>
 
-        {/* BOTTOM CTA BANNER */}
         <section className="py-16 bg-charcoal text-white text-center">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <h3 className="text-3xl sm:text-4xl font-extrabold tracking-tight">

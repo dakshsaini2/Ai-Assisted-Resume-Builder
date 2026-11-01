@@ -1,10 +1,3 @@
-/**
- * Utilities for formatting resume text, dates, and bullet points
- */
-
-/**
- * Format a start and end date range cleanly without dangling hyphens.
- */
 export function formatDateRange(
   startDate?: string | null,
   endDate?: string | null,
@@ -25,10 +18,6 @@ export function formatDateRange(
   return '';
 }
 
-/**
- * Parse multiline descriptions into an array of clean bullet points.
- * Handles existing bullet symbols (•, -, *, •) and splits by line.
- */
 export function parseBulletPoints(text?: string | null): string[] {
   if (!text || !text.trim()) return [];
 
@@ -40,9 +29,6 @@ export function parseBulletPoints(text?: string | null): string[] {
     .filter((line) => line.length > 0);
 }
 
-/**
- * Clean up web URLs for display by removing protocols and trailing slashes.
- */
 export function formatUrlForDisplay(url?: string | null): string {
   if (!url) return '';
   return url
@@ -50,4 +36,3 @@ export function formatUrlForDisplay(url?: string | null): string {
     .replace(/^www\./i, '')
     .replace(/\/$/, '');
 }
-

@@ -13,16 +13,20 @@ export const signToken = (payload: TokenPayload): string => {
   const options: SignOptions = {
     expiresIn: config.jwt.expiresIn as any,
   };
-  return jwt.sign(payload, config.jwt.secret, options);
+  return jwt.sign({ ...payload, purpose: 'session' }, config.jwt.secret, options);
 };
 
 export const verifyToken = (token: string): TokenPayload => {
-  return jwt.verify(token, config.jwt.secret) as TokenPayload;
+  const decoded = jwt.verify(token, config.jwt.secret) as any;
+  if (decoded.purpose && decoded.purpose !== 'session') {
+    throw ApiError.unauthorized('Invalid token purpose.');
+  }
+  if (!decoded.userId || !decoded.email) {
+    throw ApiError.unauthorized('Invalid session token payload.');
+  }
+  return decoded as TokenPayload;
 };
 
-/**
- * Sign a single-purpose, short-lived (60 seconds) HMAC token for headless PDF rendering.
- */
 export const signExportToken = (payload: { userId: string; resumeId: string }): string => {
   return jwt.sign(
     {
@@ -35,10 +39,6 @@ export const signExportToken = (payload: { userId: string; resumeId: string }): 
   );
 };
 
-/**
- * Verify a short-lived PDF export token.
- * Throws ApiError 401 if expired, invalid, or purpose does not match 'pdf-render'.
- */
 export const verifyExportToken = (token: string): ExportTokenPayload => {
   try {
     const decoded = jwt.verify(token, config.jwt.secret) as ExportTokenPayload;

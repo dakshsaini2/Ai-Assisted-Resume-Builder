@@ -1,5 +1,5 @@
 /**
- * Task 5.6: Comprehensive PDF QA Diagnostics & Layout Audit
+ * Comprehensive PDF QA Diagnostics & Layout Audit
  * Tests 8 distinct resume profiles across Classic, Modern, and Creative templates.
  * Analyzes layout, overflow, page breaks, orphan headings, text extraction,
  * and PDF structural validity.
@@ -529,7 +529,7 @@ function inspectPdfBuffer(buffer: Buffer, expectedKeywords: string[]): PdfStruct
 
 async function runDiagnostics() {
   console.log('\n======================================================');
-  console.log('   Task 5.6: Comprehensive PDF Quality Assurance');
+  console.log('   Comprehensive PDF Quality Assurance Diagnostics');
   console.log('======================================================\n');
 
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'puppeteer_diag_'));

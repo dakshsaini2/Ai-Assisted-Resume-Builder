@@ -2,7 +2,6 @@ import prisma from '../config/database';
 import { ApiError } from '../utils/apiError';
 import { CreateResumeInput, UpdateResumeInput } from '../validators/resume.validator';
 
-// Common include object for deep resume retrieval
 const resumeInclude = {
   education: { orderBy: { sortOrder: 'asc' as const } },
   experiences: { orderBy: { sortOrder: 'asc' as const } },
@@ -37,7 +36,6 @@ export const listResumes = async (userId: string) => {
 };
 
 export const createResume = async (userId: string, data: CreateResumeInput) => {
-  // Default fullName and email from user profile if not provided
   let fullName = data.fullName;
   let email = data.email;
 
@@ -85,7 +83,6 @@ export const updateResume = async (
   resumeId: string,
   data: UpdateResumeInput
 ) => {
-  // Verify ownership
   const existing = await prisma.resume.findFirst({
     where: { id: resumeId, userId },
   });
@@ -94,7 +91,6 @@ export const updateResume = async (
     throw ApiError.notFound('Resume not found.');
   }
 
-  // Atomic update with relations replacement
   return prisma.$transaction(async (tx) => {
     const {
       education,
@@ -112,7 +108,6 @@ export const updateResume = async (
       data: basicFields,
     });
 
-    // Sync Education
     if (education !== undefined) {
       await tx.education.deleteMany({ where: { resumeId } });
       if (education.length > 0) {
@@ -132,7 +127,6 @@ export const updateResume = async (
       }
     }
 
-    // Sync Experiences
     if (experiences !== undefined) {
       await tx.experience.deleteMany({ where: { resumeId } });
       if (experiences.length > 0) {
@@ -152,7 +146,6 @@ export const updateResume = async (
       }
     }
 
-    // Sync Projects
     if (projects !== undefined) {
       await tx.project.deleteMany({ where: { resumeId } });
       if (projects.length > 0) {
@@ -171,7 +164,6 @@ export const updateResume = async (
       }
     }
 
-    // Sync Skills
     if (skills !== undefined) {
       await tx.skill.deleteMany({ where: { resumeId } });
       if (skills.length > 0) {
@@ -186,7 +178,6 @@ export const updateResume = async (
       }
     }
 
-    // Sync Certifications
     if (certifications !== undefined) {
       await tx.certification.deleteMany({ where: { resumeId } });
       if (certifications.length > 0) {
@@ -204,7 +195,6 @@ export const updateResume = async (
       }
     }
 
-    // Sync Achievements
     if (achievements !== undefined) {
       await tx.achievement.deleteMany({ where: { resumeId } });
       if (achievements.length > 0) {
@@ -220,7 +210,6 @@ export const updateResume = async (
       }
     }
 
-    // Sync Languages
     if (languages !== undefined) {
       await tx.language.deleteMany({ where: { resumeId } });
       if (languages.length > 0) {

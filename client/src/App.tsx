@@ -1,5 +1,10 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+  Outlet,
+} from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from './store/authStore';
 import { LandingPage } from './pages/LandingPage';
@@ -10,16 +15,9 @@ import { EditorPage } from './pages/EditorPage';
 import { RenderResumePage } from './pages/RenderResumePage';
 import { ProtectedRoute, PublicRoute } from './components/layout/ProtectedRoute';
 
-export const App: React.FC = () => {
-  const checkAuth = useAuthStore((state) => state.checkAuth);
-
-  useEffect(() => {
-    // Check and validate user session against backend /api/auth/me
-    checkAuth();
-  }, [checkAuth]);
-
+const RootLayout: React.FC = () => {
   return (
-    <Router>
+    <>
       <Toaster
         position="top-right"
         toastOptions={{
@@ -45,53 +43,62 @@ export const App: React.FC = () => {
           },
         }}
       />
-
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<LandingPage />} />
-        <Route
-          path="/login"
-          element={
-            <PublicRoute>
-              <LoginPage />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <PublicRoute>
-              <RegisterPage />
-            </PublicRoute>
-          }
-        />
-
-        {/* Protected Authenticated Routes */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/editor/:id"
-          element={
-            <ProtectedRoute>
-              <EditorPage />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Dedicated Headless Renderer Route for Puppeteer PDF Generation */}
-        <Route path="/render/:id" element={<RenderResumePage />} />
-
-        {/* Fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Router>
+      <Outlet />
+    </>
   );
+};
+
+export const router = createBrowserRouter([
+  {
+    element: <RootLayout />,
+    children: [
+      { path: '/', element: <LandingPage /> },
+      {
+        path: '/login',
+        element: (
+          <PublicRoute>
+            <LoginPage />
+          </PublicRoute>
+        ),
+      },
+      {
+        path: '/register',
+        element: (
+          <PublicRoute>
+            <RegisterPage />
+          </PublicRoute>
+        ),
+      },
+      {
+        path: '/dashboard',
+        element: (
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/editor/:id',
+        element: (
+          <ProtectedRoute>
+            <EditorPage />
+          </ProtectedRoute>
+        ),
+      },
+      { path: '/render/:id', element: <RenderResumePage /> },
+      { path: '*', element: <Navigate to="/" replace /> },
+    ],
+  },
+]);
+
+export const App: React.FC = () => {
+  const checkAuth = useAuthStore((state) => state.checkAuth);
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
+  return <RouterProvider router={router} />;
 };
 
 export default App;

@@ -45,7 +45,6 @@ export const Modal: React.FC<ModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
-      {/* Backdrop */}
       <div
         className="fixed inset-0 bg-charcoal/50 backdrop-blur-xs transition-opacity"
         onClick={onClose}
@@ -56,7 +55,6 @@ export const Modal: React.FC<ModalProps> = ({
           className={`w-full ${sizeClasses[size]} transform overflow-hidden rounded-2xl bg-white text-left align-middle shadow-2xl transition-all border border-gray-100 z-10`}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Header */}
           {(title || description) && (
             <div className="flex items-start justify-between p-6 pb-4 border-b border-gray-100">
               <div>
@@ -81,10 +79,8 @@ export const Modal: React.FC<ModalProps> = ({
             </div>
           )}
 
-          {/* Body */}
           <div className="p-6">{children}</div>
 
-          {/* Footer */}
           {footer && (
             <div className="px-6 py-4 bg-gray-50/70 border-t border-gray-100 flex items-center justify-end gap-3 rounded-b-2xl">
               {footer}
