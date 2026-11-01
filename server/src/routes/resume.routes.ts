@@ -5,12 +5,17 @@ import {
   getResumeById,
   updateResume,
   deleteResume,
+  getResumeRenderData,
 } from '../controllers/resume.controller';
 import { authenticateUser } from '../middleware/auth.middleware';
 
 const router = Router();
 
-// All resume routes require authentication
+// Dedicated render data endpoint authenticated via short-lived HMAC export token
+// Registered before authenticateUser so headless renderer can authenticate with ?token=...
+router.get('/:id/render-data', getResumeRenderData);
+
+// All subsequent resume routes require standard Bearer JWT authentication
 router.use(authenticateUser);
 
 router.get('/', getResumes);
