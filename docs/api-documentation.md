@@ -222,3 +222,44 @@ All resume endpoints require `Authorization: Bearer <token>`.
   }
   ```
 
+---
+
+## 4. PDF Generation & Export Endpoints
+
+### 4.1 Download Resume PDF
+Generates and streams a print-ready A4 PDF document using Puppeteer headless rendering.
+
+- **Method**: `GET`
+- **Path**: `/api/resumes/:id/pdf`
+- **Auth**: `Bearer <token>` (User must own the resume)
+- **Response Headers**:
+  - `Content-Type`: `application/pdf`
+  - `Content-Disposition`: `attachment; filename="<Candidate_Name>_Resume.pdf"`
+  - `Access-Control-Expose-Headers`: `Content-Disposition`
+  - `Content-Length`: `<size_in_bytes>`
+  - `Cache-Control`: `no-store, no-cache, must-revalidate, proxy-revalidate`
+  - `Pragma`: `no-cache`
+  - `Expires`: `0`
+- **Response** (`200 OK`): Binary PDF stream (`%PDF-1.4`)
+- **Error Responses**:
+  - `401 Unauthorized`: Missing or invalid Bearer token
+  - `404 Not Found`: Resume does not exist or belongs to another user
+  - `502 Bad Gateway`: Headless browser rendering or client server failure
+  - `504 Gateway Timeout`: Rendering exceeded 25-second deadline
+
+### 4.2 Get Resume Render Data
+Internal endpoint used exclusively by the headless browser during PDF rendering. Authenticated via single-purpose, short-lived HMAC export tokens.
+
+- **Method**: `GET`
+- **Path**: `/api/resumes/:id/render-data?token=<exportToken>`
+- **Auth**: Query parameter `token` containing 60-second HMAC token (`purpose: 'pdf-render'`)
+- **Response Headers**:
+  - `Content-Type`: `application/json`
+  - `Cache-Control`: `no-store, no-cache, must-revalidate, proxy-revalidate`
+  - `Pragma`: `no-cache`
+  - `Expires`: `0`
+- **Response** (`200 OK`): Full resume data object (including relations)
+- **Error Responses**:
+  - `401 Unauthorized`: Missing, expired, or invalid export token
+  - `403 Forbidden`: Token resumeId does not match the URL parameter
+  - `404 Not Found`: Resume not found
