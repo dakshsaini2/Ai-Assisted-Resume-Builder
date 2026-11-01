@@ -91,7 +91,7 @@ export const ModernTemplate: React.FC<ModernTemplateProps> = ({ resume }) => {
           <h2 className="text-[10.5pt] font-bold uppercase tracking-wider text-primary border-b border-orange-100 pb-1 mb-1.5 flex items-center gap-2">
             <span>Professional Summary</span>
           </h2>
-          <p className="text-[9.5pt] text-gray-700 leading-relaxed text-justify">
+          <p className="text-[9.5pt] text-gray-700 leading-relaxed text-justify break-words">
             {summary.trim()}
           </p>
         </section>
@@ -139,7 +139,7 @@ export const ModernTemplate: React.FC<ModernTemplateProps> = ({ resume }) => {
               return (
                 <article key={idx} className="page-break-avoid">
                   <div className="flex justify-between items-baseline">
-                    <div className="text-[10pt]">
+                    <div className="text-[10pt] min-w-0 flex-1 break-words">
                       <span className="font-bold text-gray-900">{exp.position}</span>
                       {exp.company && (
                         <span className="text-gray-600 font-medium"> @ {exp.company}</span>
@@ -187,16 +187,16 @@ export const ModernTemplate: React.FC<ModernTemplateProps> = ({ resume }) => {
 
               return (
                 <article key={idx} className="page-break-avoid">
-                  <div className="flex justify-between items-baseline text-[10pt]">
-                    <div>
+                  <div className="flex justify-between items-baseline text-[10pt] gap-2">
+                    <div className="min-w-0 flex-1 break-words">
                       <span className="font-bold text-gray-900">{proj.name}</span>
                       {proj.technologies && (
-                        <span className="text-[8.5pt] text-gray-500 font-normal ml-2 bg-gray-100 px-1.5 py-0.5 rounded">
+                        <span className="text-[8.5pt] text-gray-500 font-normal ml-2 bg-gray-100 px-1.5 py-0.5 rounded break-words">
                           {proj.technologies}
                         </span>
                       )}
                     </div>
-                    <div className="shrink-0 text-right ml-2 text-[9pt]">
+                    <div className="shrink-0 text-right ml-2 max-w-[45%] break-all text-[9pt]">
                       {dateStr && <span className="text-gray-500 mr-2">{dateStr}</span>}
                       {proj.link && (
                         <span className="text-primary font-medium">
@@ -237,7 +237,7 @@ export const ModernTemplate: React.FC<ModernTemplateProps> = ({ resume }) => {
               return (
                 <div key={idx} className="page-break-avoid text-[9.5pt]">
                   <div className="flex justify-between items-baseline">
-                    <div>
+                    <div className="min-w-0 flex-1 break-words">
                       <span className="font-bold text-gray-900">{edu.degree}</span>
                       {edu.field && <span> in {edu.field}</span>}
                       {edu.institution && (
@@ -254,7 +254,7 @@ export const ModernTemplate: React.FC<ModernTemplateProps> = ({ resume }) => {
                     )}
                   </div>
                   {edu.description && (
-                    <p className="text-[9pt] text-gray-600 mt-0.5 leading-snug">
+                    <p className="text-[9pt] text-gray-600 mt-0.5 leading-snug break-words">
                       {edu.description}
                     </p>
                   )}

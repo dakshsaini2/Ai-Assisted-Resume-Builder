@@ -37,3 +37,8 @@ coverage/
 # Misc
 *.tsbuildinfo
 
+# Test artifacts
+server/test_downloads/
+server/test_qa_output/
+server/test_qa_previews/
+

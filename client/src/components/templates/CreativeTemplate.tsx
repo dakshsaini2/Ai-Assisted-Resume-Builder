@@ -46,7 +46,7 @@ export const CreativeTemplate: React.FC<CreativeTemplateProps> = ({ resume }) =>
 
   return (
     <div
-      className="resume-document bg-white text-gray-800 mx-auto text-left font-sans flex overflow-hidden shadow-xs"
+      className="resume-document bg-white text-gray-800 mx-auto text-left font-sans flex overflow-visible shadow-xs"
       style={{
         width: '210mm',
         minHeight: '297mm',
@@ -56,7 +56,7 @@ export const CreativeTemplate: React.FC<CreativeTemplateProps> = ({ resume }) =>
     >
       {/* Left Sidebar (33% width) */}
       <aside
-        className="w-[33%] bg-slate-900 text-slate-100 flex flex-col justify-between shrink-0"
+        className="w-[33%] bg-slate-900 text-slate-100 flex flex-col justify-between shrink-0 min-w-0"
         style={{ padding: '16mm 12mm' }}
       >
         <div className="space-y-6">
@@ -168,7 +168,7 @@ export const CreativeTemplate: React.FC<CreativeTemplateProps> = ({ resume }) =>
 
       {/* Right Content Area (67% width) */}
       <main
-        className="w-[67%] bg-white flex flex-col justify-between"
+        className="w-[67%] bg-white flex flex-col justify-between min-w-0"
         style={{ padding: '16mm 16mm' }}
       >
         <div className="space-y-5">
@@ -178,7 +178,7 @@ export const CreativeTemplate: React.FC<CreativeTemplateProps> = ({ resume }) =>
               <h2 className="text-[10pt] font-bold uppercase tracking-wider text-gray-900 border-b-2 border-orange-500 pb-1 mb-2">
                 Executive Profile
               </h2>
-              <p className="text-[9pt] text-gray-700 leading-relaxed text-justify">
+              <p className="text-[9pt] text-gray-700 leading-relaxed text-justify break-words">
                 {summary.trim()}
               </p>
             </section>
@@ -198,7 +198,7 @@ export const CreativeTemplate: React.FC<CreativeTemplateProps> = ({ resume }) =>
                   return (
                     <article key={idx} className="page-break-avoid">
                       <div className="flex justify-between items-baseline">
-                        <div>
+                        <div className="min-w-0 flex-1 break-words">
                           <span className="font-bold text-gray-900 text-[9.5pt]">
                             {exp.position}
                           </span>
@@ -251,16 +251,16 @@ export const CreativeTemplate: React.FC<CreativeTemplateProps> = ({ resume }) =>
 
                   return (
                     <article key={idx} className="page-break-avoid text-[9pt]">
-                      <div className="flex justify-between items-baseline">
-                        <div>
+                      <div className="flex justify-between items-baseline gap-2">
+                        <div className="min-w-0 flex-1 break-words">
                           <span className="font-bold text-gray-900">{proj.name}</span>
                           {proj.technologies && (
-                            <span className="text-[8pt] text-gray-500 font-normal ml-2">
+                            <span className="text-[8pt] text-gray-500 font-normal ml-2 break-words">
                               ({proj.technologies})
                             </span>
                           )}
                         </div>
-                        <div className="text-right shrink-0 ml-2 text-[8pt]">
+                        <div className="text-right shrink-0 ml-2 max-w-[45%] break-all text-[8pt]">
                           {dateStr && <span className="text-gray-400 mr-2">{dateStr}</span>}
                           {proj.link && (
                             <span className="text-orange-600 font-medium">
