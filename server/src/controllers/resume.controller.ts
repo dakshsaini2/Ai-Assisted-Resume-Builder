@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { asyncHandler } from '../utils/asyncHandler';
 import { sendSuccess } from '../utils/response';
-import { ApiError } from '../utils/ApiError';
+import { ApiError } from '../utils/apiError';
 import { verifyExportToken } from '../utils/jwt';
 import * as resumeService from '../services/resume.service';
 import { createResumeSchema, updateResumeSchema } from '../validators/resume.validator';

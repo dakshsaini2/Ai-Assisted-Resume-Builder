@@ -1,7 +1,7 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
 import { config } from '../config';
 import { TokenPayload } from '../types/express.d';
-import { ApiError } from './ApiError';
+import { ApiError } from './apiError';
 
 export interface ExportTokenPayload {
   userId: string;

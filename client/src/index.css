@@ -21,6 +21,13 @@ body {
   color: var(--color-charcoal);
 }
 
+/* Headless PDF render view overrides */
+body:has(#resume-ready) {
+  background-color: #ffffff !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 #root {
   min-height: 100vh;
 }

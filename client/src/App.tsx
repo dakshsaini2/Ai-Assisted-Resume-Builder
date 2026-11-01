@@ -7,6 +7,7 @@ import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { EditorPage } from './pages/EditorPage';
+import { RenderResumePage } from './pages/RenderResumePage';
 import { ProtectedRoute, PublicRoute } from './components/layout/ProtectedRoute';
 
 export const App: React.FC = () => {
@@ -82,6 +83,9 @@ export const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
+
+        {/* Dedicated Headless Renderer Route for Puppeteer PDF Generation */}
+        <Route path="/render/:id" element={<RenderResumePage />} />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />

@@ -73,6 +73,7 @@ class PdfService {
 
       this.browser = await puppeteer.launch({
         headless: true,
+        pipe: true,
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
