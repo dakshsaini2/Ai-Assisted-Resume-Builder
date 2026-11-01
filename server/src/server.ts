@@ -1,8 +1,6 @@
 import app from './app';
 import { config } from './config';
-import { PrismaClient } from '@prisma/client';
-
-export const prisma = new PrismaClient();
+import prisma from './config/database';
 
 async function main() {
   try {
@@ -32,4 +30,3 @@ process.on('SIGTERM', async () => {
 });
 
 main();
-
