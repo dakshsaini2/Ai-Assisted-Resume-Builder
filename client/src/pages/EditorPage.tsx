@@ -7,6 +7,7 @@ import {
   Eye,
   EyeOff,
   Sparkles,
+  Download,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button } from '../components/common/Button';
@@ -23,7 +24,7 @@ import { CertificationsForm } from '../components/resume/CertificationsForm';
 import { AchievementsForm } from '../components/resume/AchievementsForm';
 import { LanguagesForm } from '../components/resume/LanguagesForm';
 import { ResumePreview } from '../components/resume/ResumePreview';
-import { resumeService } from '../services/resumeService';
+import { resumeService, downloadResumePdf } from '../services/resumeService';
 import type { Resume } from '../types';
 
 export const EditorPage: React.FC = () => {
@@ -35,6 +36,7 @@ export const EditorPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(true);
+  const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(true);
 
@@ -77,6 +79,42 @@ export const EditorPage: React.FC = () => {
       toast.error(err.response?.data?.message || 'Failed to save changes.');
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  // Download PDF
+  const handleDownloadPdf = async () => {
+    if (!resume || !id || isDownloadingPdf) return;
+
+    try {
+      setIsDownloadingPdf(true);
+
+      // If user has unsaved edits, save them first so PDF reflects current editor state
+      if (!isSaved) {
+        try {
+          setIsSaving(true);
+          const updated = await resumeService.update(id, resume);
+          setResume(updated);
+          setIsSaved(true);
+        } catch (saveErr: any) {
+          toast.error(saveErr.message || 'Failed to save changes before download.');
+          setIsDownloadingPdf(false);
+          setIsSaving(false);
+          return;
+        } finally {
+          setIsSaving(false);
+        }
+      }
+
+      toast.loading('Generating high-resolution PDF...', { id: 'editor-pdf-download' });
+      const filename = await downloadResumePdf(id);
+      toast.success(`Downloaded ${filename}`, { id: 'editor-pdf-download' });
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to generate PDF. Please try again.', {
+        id: 'editor-pdf-download',
+      });
+    } finally {
+      setIsDownloadingPdf(false);
     }
   };
 
@@ -163,6 +201,20 @@ export const EditorPage: React.FC = () => {
             leftIcon={isSaved ? <Check className="w-4 h-4 text-emerald-600" /> : <Save className="w-4 h-4" />}
           >
             {isSaved ? 'Saved' : 'Save Changes'}
+          </Button>
+
+          {/* Download PDF Button */}
+          <Button
+            size="sm"
+            onClick={handleDownloadPdf}
+            isLoading={isDownloadingPdf}
+            disabled={isDownloadingPdf}
+            variant="secondary"
+            leftIcon={<Download className="w-4 h-4 text-primary-light" />}
+            title="Download high-resolution A4 PDF"
+            aria-label="Download PDF"
+          >
+            {isDownloadingPdf ? 'Generating...' : 'Download PDF'}
           </Button>
         </div>
       </header>

@@ -11,6 +11,7 @@ import {
   GraduationCap,
   Briefcase,
   AlertCircle,
+  Download,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Navbar } from '../components/layout/Navbar';
@@ -23,7 +24,7 @@ import { LoadingState } from '../components/common/LoadingState';
 import { EmptyState } from '../components/common/EmptyState';
 import { ErrorState } from '../components/common/ErrorState';
 import { useAuthStore } from '../store/authStore';
-import { resumeService } from '../services/resumeService';
+import { resumeService, downloadResumePdf } from '../services/resumeService';
 import type { ResumeListItem } from '../types';
 
 export const DashboardPage: React.FC = () => {
@@ -43,6 +44,28 @@ export const DashboardPage: React.FC = () => {
   // Delete Modal State
   const [resumeToDelete, setResumeToDelete] = useState<ResumeListItem | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // PDF Download State (tracks which resume ID is generating PDF)
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+
+  const handleDownloadPdf = async (resumeId: string, resumeTitle?: string) => {
+    if (downloadingId === resumeId) return;
+
+    try {
+      setDownloadingId(resumeId);
+      toast.loading(`Generating PDF for ${resumeTitle || 'resume'}...`, {
+        id: `dash-pdf-${resumeId}`,
+      });
+      const filename = await downloadResumePdf(resumeId);
+      toast.success(`Downloaded ${filename}`, { id: `dash-pdf-${resumeId}` });
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to download PDF. Please try again.', {
+        id: `dash-pdf-${resumeId}`,
+      });
+    } finally {
+      setDownloadingId(null);
+    }
+  };
 
   const fetchResumes = useCallback(async () => {
     try {
@@ -264,25 +287,42 @@ export const DashboardPage: React.FC = () => {
                     </div>
                   </CardBody>
 
-                  <div className="px-6 py-3 bg-gray-50/70 border-t border-gray-100 flex items-center justify-between">
+                  <div className="px-6 py-3 bg-gray-50/70 border-t border-gray-100 flex items-center justify-between gap-2">
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => setResumeToDelete(resume)}
                       className="text-gray-500 hover:text-red-600 hover:bg-red-50"
                       leftIcon={<Trash2 className="w-3.5 h-3.5" />}
+                      aria-label={`Delete ${resume.title}`}
                     >
                       Delete
                     </Button>
 
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      onClick={() => navigate(`/editor/${resume.id}`)}
-                      leftIcon={<Edit3 className="w-3.5 h-3.5" />}
-                    >
-                      Edit Resume
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDownloadPdf(resume.id, resume.title)}
+                        isLoading={downloadingId === resume.id}
+                        disabled={downloadingId === resume.id}
+                        leftIcon={<Download className="w-3.5 h-3.5 text-primary" />}
+                        title="Download PDF"
+                        aria-label={`Download PDF for ${resume.title}`}
+                      >
+                        {downloadingId === resume.id ? 'Generating...' : 'PDF'}
+                      </Button>
+
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={() => navigate(`/editor/${resume.id}`)}
+                        leftIcon={<Edit3 className="w-3.5 h-3.5" />}
+                        aria-label={`Edit ${resume.title}`}
+                      >
+                        Edit Resume
+                      </Button>
+                    </div>
                   </div>
                 </Card>
               ))}

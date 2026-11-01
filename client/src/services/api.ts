@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const API_BASE_URL = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL) || '/api';
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -12,7 +12,15 @@ export const api = axios.create({
 // Request Interceptor: Attach JWT Token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    let token: string | null = null;
+    try {
+      if (typeof localStorage !== 'undefined' && typeof localStorage.getItem === 'function') {
+        token = localStorage.getItem('token');
+      }
+    } catch {
+      // Ignore in non-browser environments
+    }
+
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -26,13 +34,22 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Clear token if expired or invalid
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      // If not already on an auth page, redirect
+      try {
+        if (typeof localStorage !== 'undefined' && typeof localStorage.removeItem === 'function') {
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+        }
+      } catch {
+        // Ignore
+      }
+
+      // If not already on an auth or render page, redirect
       if (
+        typeof window !== 'undefined' &&
+        window.location &&
         !window.location.pathname.includes('/login') &&
         !window.location.pathname.includes('/register') &&
+        !window.location.pathname.includes('/render') &&
         window.location.pathname !== '/'
       ) {
         window.location.href = '/login';

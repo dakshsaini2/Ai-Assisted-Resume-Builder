@@ -59,6 +59,7 @@ export const downloadResumePdf = asyncHandler(async (req: Request, res: Response
 
   res.setHeader('Content-Type', 'application/pdf');
   res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+  res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
   res.setHeader('Content-Length', pdfBuffer.length.toString());
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   res.setHeader('Pragma', 'no-cache');
