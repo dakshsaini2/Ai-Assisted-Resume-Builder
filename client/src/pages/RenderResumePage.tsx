@@ -123,3 +123,4 @@ export const RenderResumePage: React.FC = () => {
     </div>
   );
 };
+

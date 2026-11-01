@@ -4,7 +4,11 @@
  * Requires the server to be running on PORT from .env
  */
 
-const BASE_URL = `http://localhost:${process.env.PORT || 5001}/api`;
+import http from 'http';
+import app from '../app';
+
+const PORT = process.env.PORT || 5001;
+const BASE_URL = `http://127.0.0.1:${PORT}/api`;
 
 let passed = 0;
 let failed = 0;
@@ -26,11 +30,20 @@ async function json(res: Response): Promise<any> {
 async function runTests() {
   console.log(`\n🔧 Testing API at ${BASE_URL}\n`);
 
-  // ── Health Check ──────────────────────────────────────────
-  console.log('Health Check');
-  const healthRes = await fetch(`${BASE_URL}/health`);
-  const healthData = await json(healthRes);
-  assert('GET /api/health returns ok', healthData.status === 'ok');
+  let server: any = null;
+  try {
+    await fetch(`${BASE_URL}/health`);
+  } catch {
+    server = http.createServer(app);
+    await new Promise<void>((resolve) => server.listen(PORT, '127.0.0.1', () => resolve()));
+  }
+
+  try {
+    // ── Health Check ──────────────────────────────────────────
+    console.log('Health Check');
+    const healthRes = await fetch(`${BASE_URL}/health`);
+    const healthData = await json(healthRes);
+    assert('GET /api/health returns ok', healthData.status === 'ok');
 
   // ── Auth: Registration ────────────────────────────────────
   console.log('\nAuth: Registration');
@@ -238,6 +251,13 @@ async function runTests() {
   const listAfterRes = await fetch(`${BASE_URL}/resumes`, { headers: auth });
   const listAfterData = await json(listAfterRes);
   assert('Resume deleted from list', listAfterData.data?.resumes?.length === 0);
+
+  } finally {
+    if (server) {
+      server.closeAllConnections?.();
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+    }
+  }
 
   // ── Summary ───────────────────────────────────────────────
   console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);

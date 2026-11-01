@@ -1,4 +1,6 @@
 import puppeteer, { Browser, Page, PDFOptions } from 'puppeteer';
+import { config } from '../config';
+import { ApiError } from '../utils/apiError';
 
 /**
  * Configuration options for PDF generation
@@ -97,15 +99,133 @@ class PdfService {
   /**
    * Safely validate that a target URL belongs strictly to an allowed internal origin.
    */
-  private validateUrl(targetUrl: string): void {
+  public validateUrl(targetUrl: string): void {
     try {
       const parsed = new URL(targetUrl);
-      const origin = parsed.origin;
-      if (!ALLOWED_ORIGINS.includes(origin)) {
-        throw new Error(`Unauthorized PDF navigation origin: ${origin}`);
+      const isHttp = parsed.protocol === 'http:' || parsed.protocol === 'https:';
+
+      let clientOrigin = '';
+      try {
+        if (config.clientUrl) {
+          clientOrigin = new URL(config.clientUrl).origin;
+        }
+      } catch {
+        // Ignore
+      }
+
+      const isLocal =
+        parsed.hostname === 'localhost' ||
+        parsed.hostname === '127.0.0.1' ||
+        (clientOrigin && parsed.origin === clientOrigin);
+
+      if (!isHttp || !isLocal) {
+        throw new Error(`Unauthorized PDF navigation origin: ${parsed.origin}`);
       }
     } catch (err: any) {
+      if (err.message.includes('Unauthorized PDF navigation origin')) {
+        throw err;
+      }
       throw new Error(`Invalid navigation URL for PDF generation: ${err.message}`);
+    }
+  }
+
+  /**
+   * Generate an A4 PDF for a specific resume by rendering through the client render route.
+   * Guarantees:
+   * 1. Navigation is restricted strictly to trusted local frontend origins.
+   * 2. Waits for #resume-ready DOM indicator.
+   * 3. Catches and parses #resume-ready[data-status="error"].
+   * 4. Awaits document.fonts.ready for font stabilization.
+   * 5. Page is ALWAYS closed in a finally block to prevent resource leaks.
+   */
+  public async generateResumePdf(
+    resumeId: string,
+    exportToken: string,
+    customBaseUrl?: string
+  ): Promise<Buffer> {
+    const baseUrl = customBaseUrl || config.clientUrl || 'http://localhost:5173';
+    const targetUrl = `${baseUrl}/render/${encodeURIComponent(resumeId)}?token=${encodeURIComponent(exportToken)}`;
+
+    this.validateUrl(targetUrl);
+
+    const browser = await this.getBrowser();
+    let page: Page | null = null;
+    const timeout = 25000;
+
+    try {
+      page = await browser.newPage();
+
+      // Configure viewport for A4 proportions (794x1123 at 96 DPI)
+      await page.setViewport({
+        width: 794,
+        height: 1123,
+        deviceScaleFactor: 2,
+      });
+
+      // Emulate print media so CSS @media print and print color adjust rules apply
+      await page.emulateMediaType('print');
+
+      // Navigate to internal render URL
+      try {
+        await page.goto(targetUrl, {
+          waitUntil: 'domcontentloaded',
+          timeout,
+        });
+      } catch (navErr: any) {
+        if (
+          navErr.message?.includes('net::ERR_CONNECTION_REFUSED') ||
+          navErr.message?.includes('ECONNREFUSED')
+        ) {
+          throw new ApiError(502, 'Frontend rendering server is unavailable. Ensure the client application is running.');
+        }
+        if (navErr.name === 'TimeoutError' || navErr.message?.includes('timeout')) {
+          throw new ApiError(504, 'Navigation timed out while rendering resume.');
+        }
+        throw new ApiError(500, `Failed to navigate to resume renderer: ${navErr.message}`);
+      }
+
+      // Wait for #resume-ready root container
+      try {
+        await page.waitForSelector('#resume-ready', { timeout: 10000 });
+      } catch {
+        throw new ApiError(504, 'Timed out waiting for resume renderer to initialize.');
+      }
+
+      // Check current status on #resume-ready
+      const initialStatus = await page.$eval('#resume-ready', (el) => el.getAttribute('data-status'));
+      if (initialStatus === 'error') {
+        const errorText = await page.$eval('#resume-ready', (el) => el.textContent?.trim() || 'Unknown error');
+        throw new ApiError(502, `Resume rendering failed: ${errorText}`);
+      }
+
+      // If still loading, wait for data-status="ready"
+      if (initialStatus !== 'ready') {
+        try {
+          await page.waitForSelector('#resume-ready[data-status="ready"]', { timeout: 10000 });
+        } catch {
+          const currentStatus = await page.$eval('#resume-ready', (el) => el.getAttribute('data-status')).catch(() => 'unknown');
+          if (currentStatus === 'error') {
+            const errorText = await page.$eval('#resume-ready', (el) => el.textContent?.trim() || 'Unknown error');
+            throw new ApiError(502, `Resume rendering failed: ${errorText}`);
+          }
+          throw new ApiError(504, 'Timed out waiting for resume template to complete rendering.');
+        }
+      }
+
+      // Wait for fonts to finish rendering
+      await page.evaluateHandle('document.fonts.ready');
+
+      // Generate the PDF buffer
+      const pdfUint8Array = await page.pdf(DEFAULT_A4_PDF_OPTIONS);
+      return Buffer.from(pdfUint8Array);
+    } finally {
+      if (page) {
+        try {
+          await page.close();
+        } catch {
+          // Ignore error on closed page
+        }
+      }
     }
   }
 
@@ -148,7 +268,7 @@ class PdfService {
       if (url) {
         // Navigate to trusted internal URL
         await page.goto(url, {
-          waitUntil: ['networkidle0', 'domcontentloaded'],
+          waitUntil: 'domcontentloaded',
           timeout,
         });
       } else if (html) {

@@ -15,6 +15,12 @@ export const errorHandler = (
   res: Response,
   _next: NextFunction
 ) => {
+  // If response headers have already been sent, delegate to default Express handler
+  // to avoid ERR_HTTP_HEADERS_SENT secondary crashes
+  if (res.headersSent) {
+    return _next(err);
+  }
+
   const isProduction = process.env.NODE_ENV === 'production';
 
   // Log full error in development, minimal in production

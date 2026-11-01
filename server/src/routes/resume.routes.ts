@@ -6,6 +6,7 @@ import {
   updateResume,
   deleteResume,
   getResumeRenderData,
+  downloadResumePdf,
 } from '../controllers/resume.controller';
 import { authenticateUser } from '../middleware/auth.middleware';
 
@@ -20,6 +21,7 @@ router.use(authenticateUser);
 
 router.get('/', getResumes);
 router.post('/', createResume);
+router.get('/:id/pdf', downloadResumePdf);
 router.get('/:id', getResumeById);
 router.put('/:id', updateResume);
 router.delete('/:id', deleteResume);
