@@ -158,3 +158,4 @@ erDiagram
 1. **User Isolation**: All queries enforce `where: { userId }` or `where: { id, userId }` to prevent horizontal privilege escalation.
 2. **Cascade Deletes**: Deleting a User automatically cascades to delete all their Resumes and CoverLetters. Deleting a Resume automatically cascades to all associated Education, Experience, Project, Skill, Certification, Achievement, Language, Analysis, and JobMatch records.
 3. **Atomic Multi-Entity Sync**: Updating a resume's nested sections is executed in an atomic Prisma transaction (`prisma.$transaction`).
+

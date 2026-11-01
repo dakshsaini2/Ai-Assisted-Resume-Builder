@@ -221,3 +221,4 @@ All resume endpoints require `Authorization: Bearer <token>`.
     "data": null
   }
   ```
+

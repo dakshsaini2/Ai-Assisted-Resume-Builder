@@ -18,3 +18,4 @@ Job seekers and students often struggle to create well-structured, professional 
 - **Database**: PostgreSQL 16 (Dockerized), Prisma ORM v6 with relational cascade handling.
 - **AI Integration**: Google Gemini API via secure backend orchestration.
 - **Document Export**: Headless Chromium (Puppeteer) generating standard A4 PDFs.
+
