@@ -122,9 +122,9 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({
         </div>
       )}
 
-      <div className="w-full flex justify-center overflow-x-auto pb-8">
+      <div className="w-full flex justify-center overflow-x-auto pb-8 print:block print:p-0 print:m-0 print:overflow-visible">
         <div
-          className="resume-print-wrapper transition-transform duration-150 origin-top shadow-xl border border-gray-200/80 rounded-sm"
+          className="resume-print-wrapper transition-transform duration-150 origin-top shadow-xl border border-gray-200/80 rounded-sm print:shadow-none print:border-none"
           style={{
             transform: `scale(${zoom})`,
             transformOrigin: 'top center',

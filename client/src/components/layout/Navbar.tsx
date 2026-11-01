@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Sparkles, User as UserIcon, LogOut, Menu, X, FileText } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import { Button } from '../common/Button';
@@ -8,7 +8,25 @@ import { Dropdown } from '../common/Dropdown';
 export const Navbar: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    sectionId: string
+  ) => {
+    e.preventDefault();
+    if (location.pathname !== '/') {
+      navigate(`/#${sectionId}`);
+    } else {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+        window.history.pushState(null, '', `/#${sectionId}`);
+      }
+    }
+    setMobileMenuOpen(false);
+  };
 
   const handleLogout = () => {
     logout();
@@ -43,24 +61,34 @@ export const Navbar: React.FC = () => {
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
-            <Link
-              to="/#features"
-              className="text-sm font-medium text-charcoal-light hover:text-charcoal transition-colors"
+            <a
+              href="/#features"
+              onClick={(e) => handleNavClick(e, 'features')}
+              className="text-sm font-medium text-charcoal-light hover:text-charcoal transition-colors cursor-pointer"
             >
               Features
-            </Link>
-            <Link
-              to="/#templates"
-              className="text-sm font-medium text-charcoal-light hover:text-charcoal transition-colors"
-            >
-              Templates
-            </Link>
-            <Link
-              to="/#how-it-works"
-              className="text-sm font-medium text-charcoal-light hover:text-charcoal transition-colors"
+            </a>
+            <a
+              href="/#how-it-works"
+              onClick={(e) => handleNavClick(e, 'how-it-works')}
+              className="text-sm font-medium text-charcoal-light hover:text-charcoal transition-colors cursor-pointer"
             >
               How It Works
-            </Link>
+            </a>
+            <a
+              href="/#templates"
+              onClick={(e) => handleNavClick(e, 'templates')}
+              className="text-sm font-medium text-charcoal-light hover:text-charcoal transition-colors cursor-pointer"
+            >
+              Templates
+            </a>
+            <a
+              href="/#about"
+              onClick={(e) => handleNavClick(e, 'about')}
+              className="text-sm font-medium text-charcoal-light hover:text-charcoal transition-colors cursor-pointer"
+            >
+              About
+            </a>
             {isAuthenticated && (
               <Link
                 to="/dashboard"
@@ -116,27 +144,34 @@ export const Navbar: React.FC = () => {
 
       {mobileMenuOpen && (
         <div className="md:hidden border-b border-gray-200 bg-white px-4 pt-3 pb-6 space-y-3">
-          <Link
-            to="/#features"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block px-3 py-2 rounded-md text-base font-medium text-charcoal hover:bg-gray-50"
+          <a
+            href="/#features"
+            onClick={(e) => handleNavClick(e, 'features')}
+            className="block px-3 py-2 rounded-md text-base font-medium text-charcoal hover:bg-gray-50 cursor-pointer"
           >
             Features
-          </Link>
-          <Link
-            to="/#templates"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block px-3 py-2 rounded-md text-base font-medium text-charcoal hover:bg-gray-50"
-          >
-            Templates
-          </Link>
-          <Link
-            to="/#how-it-works"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block px-3 py-2 rounded-md text-base font-medium text-charcoal hover:bg-gray-50"
+          </a>
+          <a
+            href="/#how-it-works"
+            onClick={(e) => handleNavClick(e, 'how-it-works')}
+            className="block px-3 py-2 rounded-md text-base font-medium text-charcoal hover:bg-gray-50 cursor-pointer"
           >
             How It Works
-          </Link>
+          </a>
+          <a
+            href="/#templates"
+            onClick={(e) => handleNavClick(e, 'templates')}
+            className="block px-3 py-2 rounded-md text-base font-medium text-charcoal hover:bg-gray-50 cursor-pointer"
+          >
+            Templates
+          </a>
+          <a
+            href="/#about"
+            onClick={(e) => handleNavClick(e, 'about')}
+            className="block px-3 py-2 rounded-md text-base font-medium text-charcoal hover:bg-gray-50 cursor-pointer"
+          >
+            About
+          </a>
           {isAuthenticated ? (
             <>
               <Link

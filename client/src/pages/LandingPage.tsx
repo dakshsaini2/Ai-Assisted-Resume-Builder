@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import {
   Sparkles,
   ArrowRight,
@@ -10,6 +10,9 @@ import {
   FileText,
   Layers,
   ChevronRight,
+  Shield,
+  Cpu,
+  Award,
 } from 'lucide-react';
 import { Navbar } from '../components/layout/Navbar';
 import { Footer } from '../components/layout/Footer';
@@ -18,6 +21,19 @@ import { useAuthStore } from '../store/authStore';
 
 export const LandingPage: React.FC = () => {
   const { isAuthenticated } = useAuthStore();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const element = document.getElementById(location.hash.substring(1));
+      if (element) {
+        const timer = setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [location.hash]);
 
   return (
     <div className="min-h-screen flex flex-col bg-warm-white text-charcoal">
@@ -420,6 +436,60 @@ export const LandingPage: React.FC = () => {
                 <h4 className="text-lg font-bold text-charcoal mb-2">Export Clean PDF</h4>
                 <p className="text-sm text-charcoal-light">
                   Select your desired template, preview the live A4 document, and download your high-resolution resume PDF.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="about" className="py-20 bg-warm-white border-t border-gray-200/80">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-primary mb-2">
+                Our Mission & Standards
+              </h2>
+              <h3 className="text-3xl font-extrabold text-charcoal tracking-tight sm:text-4xl">
+                Built for High-Impact Careers
+              </h3>
+              <p className="mt-4 text-base text-charcoal-light">
+                ResumAI provides candidates with intelligent writing tools, battle-tested ATS compliance, and privacy-first document generation.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="p-8 rounded-2xl bg-white border border-gray-200/80 shadow-xs hover:shadow-md transition-all">
+                <div className="w-12 h-12 rounded-xl bg-orange-100 text-primary flex items-center justify-center mb-6">
+                  <Shield className="w-6 h-6" />
+                </div>
+                <h4 className="text-lg font-bold text-charcoal mb-2">
+                  Privacy & Data Ownership
+                </h4>
+                <p className="text-sm text-charcoal-light leading-relaxed">
+                  Your career data is completely private. We never share, sell, or train public models on your personal resume details.
+                </p>
+              </div>
+
+              <div className="p-8 rounded-2xl bg-white border border-gray-200/80 shadow-xs hover:shadow-md transition-all">
+                <div className="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-6">
+                  <Cpu className="w-6 h-6" />
+                </div>
+                <h4 className="text-lg font-bold text-charcoal mb-2">
+                  Precision Engineering
+                </h4>
+                <p className="text-sm text-charcoal-light leading-relaxed">
+                  Every template is crafted to match modern recruiter reading habits and automated ATS parser standards without layout breakage.
+                </p>
+              </div>
+
+              <div className="p-8 rounded-2xl bg-white border border-gray-200/80 shadow-xs hover:shadow-md transition-all">
+                <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-6">
+                  <Award className="w-6 h-6" />
+                </div>
+                <h4 className="text-lg font-bold text-charcoal mb-2">
+                  Authentic AI Enhancement
+                </h4>
+                <p className="text-sm text-charcoal-light leading-relaxed">
+                  AI suggestions elevate your achievements into measurable business impact while preserving your genuine accomplishments and tone.
                 </p>
               </div>
             </div>

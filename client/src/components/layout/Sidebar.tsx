@@ -53,7 +53,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <aside
-      className={`w-64 bg-white border-r border-gray-200/80 p-4 flex flex-col gap-6 shrink-0 ${className}`}
+      className={`no-print print:hidden w-64 bg-white border-r border-gray-200/80 p-4 flex flex-col gap-6 shrink-0 ${className}`}
     >
       <div>
         <h3 className="px-3 text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">

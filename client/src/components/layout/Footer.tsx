@@ -17,9 +17,6 @@ export const Footer: React.FC = () => {
             <p className="mt-3 text-sm text-charcoal-light max-w-sm">
               Empowering students and job seekers with modern resume templates, intelligent AI bullet-point improvements, and ATS optimization.
             </p>
-            <p className="mt-2 text-xs text-gray-400">
-              Semester 7 CSE Mini-Project
-            </p>
           </div>
 
           <div>

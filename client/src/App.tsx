@@ -19,6 +19,7 @@ const RootLayout: React.FC = () => {
   return (
     <>
       <Toaster
+        containerClassName="no-print"
         position="top-right"
         toastOptions={{
           duration: 3500,

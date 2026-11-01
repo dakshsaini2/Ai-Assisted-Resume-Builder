@@ -7,6 +7,7 @@ import {
   Eye,
   EyeOff,
   Download,
+  Printer,
   AlertTriangle,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -157,6 +158,10 @@ export const EditorPage: React.FC = () => {
     }
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   const requireAiConsent = (action: () => void) => {
     if (hasAiPrivacyConsent()) {
       action();
@@ -223,8 +228,8 @@ export const EditorPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-warm-white text-charcoal">
-      <header className="sticky top-0 z-30 bg-white border-b border-gray-200/80 px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+    <div className="min-h-screen flex flex-col bg-warm-white text-charcoal print:block print:bg-white print:min-h-0">
+      <header className="no-print print:hidden sticky top-0 z-30 bg-white border-b border-gray-200/80 px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Link
             to="/dashboard"
@@ -284,6 +289,17 @@ export const EditorPage: React.FC = () => {
 
           <Button
             size="sm"
+            variant="outline"
+            onClick={handlePrint}
+            leftIcon={<Printer className="w-4 h-4 text-charcoal-light" />}
+            title="Print or Save as PDF via browser print dialog"
+            aria-label="Print resume"
+          >
+            Print
+          </Button>
+
+          <Button
+            size="sm"
             onClick={handleDownloadPdf}
             isLoading={isDownloadingPdf}
             disabled={isDownloadingPdf}
@@ -297,14 +313,14 @@ export const EditorPage: React.FC = () => {
         </div>
       </header>
 
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden print:block print:overflow-visible">
         <Sidebar
           activeSection={activeSection}
           onSelectSection={setActiveSection}
           className="hidden md:flex"
         />
 
-        <main className="flex-1 p-6 sm:p-8 overflow-y-auto max-w-3xl">
+        <main className="flex-1 p-6 sm:p-8 overflow-y-auto max-w-3xl no-print print:hidden">
           <div className="block md:hidden mb-6">
             <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1.5">
               Jump to Section
@@ -417,14 +433,18 @@ export const EditorPage: React.FC = () => {
           </div>
         </main>
 
-        {showPreview && (
-          <aside className="hidden lg:block w-[48%] xl:w-[50%] bg-warm-gray border-l border-gray-200/80 p-5 overflow-y-auto">
-            <ResumePreview
-              resume={resume}
-              onTemplateChange={(templateId) => handleUpdate({ templateId })}
-            />
-          </aside>
-        )}
+        <aside
+          className={`resume-preview-aside bg-warm-gray border-l border-gray-200/80 p-5 overflow-y-auto print:!block print:!w-full print:!p-0 print:!border-none print:!m-0 print:!overflow-visible ${
+            showPreview
+              ? 'hidden lg:block w-[48%] xl:w-[50%]'
+              : 'hidden print:!block'
+          }`}
+        >
+          <ResumePreview
+            resume={resume}
+            onTemplateChange={(templateId) => handleUpdate({ templateId })}
+          />
+        </aside>
       </div>
 
       <AiConsentModal
