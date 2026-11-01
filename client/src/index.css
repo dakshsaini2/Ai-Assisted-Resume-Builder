@@ -41,6 +41,8 @@ body:has(#resume-ready) {
   box-sizing: border-box;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 /* Page Break Protection */
@@ -52,6 +54,21 @@ body:has(#resume-ready) {
 .page-break-before {
   break-before: page !important;
   page-break-before: always !important;
+}
+
+/* Prevent section headings from becoming stranded at the bottom of pages (orphan prevention) */
+.resume-document h1,
+.resume-document h2,
+.resume-document h3 {
+  break-after: avoid !important;
+  page-break-after: avoid !important;
+}
+
+/* Keep list items and articles intact across page breaks */
+.resume-document article,
+.resume-document li {
+  break-inside: avoid;
+  page-break-inside: avoid;
 }
 
 /* PRINT STYLESHEET */
@@ -73,7 +90,7 @@ body:has(#resume-ready) {
   }
 
   /* Hide all UI elements except the resume document itself */
-  header,
+  header:not(.resume-document header),
   footer,
   aside:not(.resume-document aside),
   nav,

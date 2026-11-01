@@ -15,6 +15,7 @@
 import http from 'http';
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 import express from 'express';
 import puppeteer, { Browser, Page } from 'puppeteer';
 import bcrypt from 'bcryptjs';
@@ -248,8 +249,11 @@ async function runBrowserVerification() {
   // 4. Launch Real Puppeteer Chromium Browser
   // ─────────────────────────────────────────────────────────────
   console.log('\nStarting Chromium browser automation...');
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'puppeteer_bv_'));
   const browser: Browser = await puppeteer.launch({
     headless: true,
+    pipe: true,
+    userDataDir: tempDir,
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
   });
 
@@ -462,7 +466,12 @@ async function runBrowserVerification() {
 
   } finally {
     // Cleanup browser
-    await browser.close();
+    try {
+      await browser.close();
+    } catch {}
+    try {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    } catch {}
     console.log('  [Cleanup] Closed Puppeteer browser.');
 
     // Cleanup servers

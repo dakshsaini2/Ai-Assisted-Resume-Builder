@@ -85,7 +85,7 @@ export const ClassicTemplate: React.FC<ClassicTemplateProps> = ({ resume }) => {
           <h2 className="text-[11pt] font-bold uppercase tracking-wider text-gray-900 border-b border-gray-400 pb-0.5 mb-1.5">
             Professional Summary
           </h2>
-          <p className="text-[10pt] text-gray-800 text-justify leading-relaxed">
+          <p className="text-[10pt] text-gray-800 text-justify leading-relaxed break-words">
             {summary.trim()}
           </p>
         </section>
@@ -105,7 +105,7 @@ export const ClassicTemplate: React.FC<ClassicTemplateProps> = ({ resume }) => {
               return (
                 <article key={idx} className="page-break-avoid">
                   <div className="flex justify-between items-baseline text-[10.5pt]">
-                    <div>
+                    <div className="min-w-0 flex-1 break-words">
                       <span className="font-bold text-gray-900">{exp.position}</span>
                       {exp.company && (
                         <span className="font-semibold text-gray-800"> — {exp.company}</span>
@@ -152,7 +152,7 @@ export const ClassicTemplate: React.FC<ClassicTemplateProps> = ({ resume }) => {
               return (
                 <div key={idx} className="page-break-avoid text-[10pt]">
                   <div className="flex justify-between items-baseline">
-                    <div>
+                    <div className="min-w-0 flex-1 break-words">
                       <span className="font-bold text-gray-900">{edu.institution}</span>
                       {edu.degree && (
                         <span className="text-gray-800">
@@ -169,7 +169,7 @@ export const ClassicTemplate: React.FC<ClassicTemplateProps> = ({ resume }) => {
                     <p className="text-[9pt] text-gray-600 mt-0.5">GPA: {edu.gpa}</p>
                   )}
                   {edu.description && (
-                    <p className="text-[9pt] text-gray-700 mt-0.5 leading-snug">
+                    <p className="text-[9pt] text-gray-700 mt-0.5 leading-snug break-words">
                       {edu.description}
                     </p>
                   )}
@@ -193,16 +193,16 @@ export const ClassicTemplate: React.FC<ClassicTemplateProps> = ({ resume }) => {
 
               return (
                 <article key={idx} className="page-break-avoid text-[10pt]">
-                  <div className="flex justify-between items-baseline">
-                    <div>
+                  <div className="flex justify-between items-baseline gap-2">
+                    <div className="min-w-0 flex-1 break-words">
                       <span className="font-bold text-gray-900">{proj.name}</span>
                       {proj.technologies && (
-                        <span className="text-[9.5pt] text-gray-700 italic ml-1">
+                        <span className="text-[9.5pt] text-gray-700 italic ml-1 break-words">
                           | {proj.technologies}
                         </span>
                       )}
                     </div>
-                    <div className="text-right shrink-0 ml-2">
+                    <div className="text-right shrink-0 ml-2 max-w-[45%] break-all">
                       {dateStr && (
                         <span className="text-[9pt] text-gray-500 mr-2">{dateStr}</span>
                       )}
