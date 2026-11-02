@@ -61,7 +61,7 @@ export const config = {
   },
   gemini: {
     apiKey: process.env.GEMINI_API_KEY || '',
-    model: process.env.GEMINI_MODEL || 'gemini-3.8-flash',
+    model: process.env.GEMINI_MODEL || 'gemini-3.5-flash',
     timeoutMs: parseTimeoutMs(process.env.GEMINI_TIMEOUT_MS, 60000),
   },
   clientUrl: process.env.CLIENT_URL || 'http://localhost:5173',
