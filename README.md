@@ -1,6 +1,6 @@
 # AI-Assisted Online Resume Builder
 
-A full-stack web application for creating, tailoring, and exporting professional, ATS-friendly resumes with Google Gemini AI assistance and server-side PDF generation.
+A full-stack web application for creating, tailoring, and exporting professional, ATS-friendly resumes with Google Gemini AI assistance and server-side PDF generation. 
 
 ---
 
